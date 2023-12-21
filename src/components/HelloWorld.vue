@@ -2,6 +2,9 @@
   <div class="SAMO">
     Samo je kokot!
   </div>
+  <div class="SAMO">
+    Samo je kokot22222!
+  </div>
   <p>
     Install
     <a href="https://github.com/vuejs/language-tools" target="_blank">Volar</a>
