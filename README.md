@@ -1,1 +1,2 @@
 # gameWEBTE
+Samo daco
