@@ -7,7 +7,7 @@
     <a href="https://github.com/vuejs/language-tools" target="_blank">Volar</a>
     in your IDE for a better DX
     <div> patove div</div>
-    <div>push 2</div>
+    <div>push 3</div>
   </p>
 </template>
 
