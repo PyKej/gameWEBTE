@@ -1,4 +1,7 @@
 <template>
+  <div class="SAMO">
+    Samo je kokot!
+  </div>
   <p>
     Install
     <a href="https://github.com/vuejs/language-tools" target="_blank">Volar</a>
