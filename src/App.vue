@@ -1,5 +1,5 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import GameComponent from './components/GameComponent.vue'
 </script>
 
 <template>
@@ -37,7 +37,7 @@ import HelloWorld from './components/HelloWorld.vue'
   </div>
 </nav>
 
-<HelloWorld msg="Vite + Vue" />
+<GameComponent/>
 
 </template>
 
