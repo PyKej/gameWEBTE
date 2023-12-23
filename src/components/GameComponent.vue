@@ -1,19 +1,4 @@
 <template>
-  <!-- <div class="SAMO">
-    Samo je kokot!
-  </div>
-  <div class="SAMO">
-    Samo je kokot22222!
-  </div>
-  <p>
-    Install
-    <a href="https://github.com/vuejs/language-tools" target="_blank">Volar</a>
-    in your IDE for a better DX
-    <div> patove div</div>
-    <div>push 3</div>
-  </p> -->
-
-  <!-- Divko s hrou -->
   <div id="game"></div>
 </template>
 
