@@ -1,18 +1,13 @@
 <script setup>
-import GameComponent from './components/GameComponent.vue'
+import HelloWorld from './components/HelloWorld.vue';
+
+//Predpokladam ze chces komponent HelloWorld premenovat na GameComponent asi, alebo spravit novy
+//import GameComponent from './components/GameComponent.vue'
 </script>
 
 <template>
-  <!-- <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" /> -->
-  <nav class="navbar navbar-expand-lg bg-light">
+  
+  <!-- <nav class="navbar navbar-expand-lg bg-light">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">Navbar</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,23 +30,13 @@ import GameComponent from './components/GameComponent.vue'
       </ul>
     </div>
   </div>
-</nav>
+</nav> -->
+<h1>Happy Submarine!</h1>
 
-<GameComponent/>
+<HelloWorld/> <!-- Toto chces asi premenovat na Game xD -->
 
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="SAMO">
+  <!-- <div class="SAMO">
     Samo je kokot!
   </div>
   <div class="SAMO">
@@ -11,7 +11,10 @@
     in your IDE for a better DX
     <div> patove div</div>
     <div>push 3</div>
-  </p>
+  </p> -->
+
+  <!-- Divko s hrou -->
+  <div id="game"></div>
 </template>
 
 
@@ -20,6 +23,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import Phaser from 'phaser';
+import Menu from './Menu';
 
 onMounted(() => {
   const config = {
@@ -33,19 +37,10 @@ onMounted(() => {
         debug: false
       }
     },
-    scene: {
-      preload() {
-        // Load assets
-      },
-      create() {
-        // Create game objects
-      },
-      update() {
-        // Game loop
-      }
-    }
+    scene: [Menu], //Tu potom treba pridať ďalšiu classu do scene -> scene: [Menu, Game]
+    parent: 'game' 
   };
-
+  
   new Phaser.Game(config);
 });
 </script>
@@ -53,7 +48,10 @@ onMounted(() => {
 
 
 <style scoped>
-.read-the-docs {
-  color: #888;
+#game {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 </style>
