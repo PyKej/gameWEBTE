@@ -11,6 +11,7 @@
 import { onMounted } from 'vue';
 import Phaser from 'phaser';
 import Menu from './Menu';
+import Game  from './Game';
 
 onMounted(() => {
   const config = {
@@ -24,7 +25,7 @@ onMounted(() => {
         debug: false
       }
     },
-    scene: [Menu], //Tu potom treba pridať ďalšiu classu do scene -> scene: [Menu, Game]
+    scene: [Menu, Game], //Tu potom treba pridať ďalšiu classu do scene -> scene: [Menu, Game]
     parent: 'game' 
   };
   

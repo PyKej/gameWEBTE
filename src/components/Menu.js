@@ -1,100 +1,124 @@
 import Phaser from 'phaser'
-import menuImg from '../assets/menu_img.png';
+import menuImg from '../assets/bcg_3.png';
 
 var MainMenuScene = new Phaser.Class({
 
     //MainMenuScene je subClassa Phaser.Scene
     Extends: Phaser.Scene,
 
-    initialize:
-    //Konštruktor
-    function MainMenuScene ()
-    {
+    initialize: function MainMenuScene () {
         Phaser.Scene.call(this, { key: 'main-menu' });
         this.showInfo = false;
     },
 
-    //Toto je zavolane na začiatku iba jeden-krát, väčšinou sa tam dava to aby si mohol hybať pomocou
-    //Klavesnice / myšky
-    init: function ()
-    {
+    init: function () {
         this.cursors = this.input.keyboard.createCursorKeys();
     },
 
-    //Toto Loaduje assety (fotky atd.) do Scene predtym ako sa celá načíta
-    preload: function ()
-    {
+    preload: function () {
         this.load.image('menu_img', menuImg);
-        
     },
 
-    // TODO: Na vytvorenie Menu
-    create: function ()
-    {
+    create: function () {
+        // Constanty ktore su properties sceny
+        this.rectWidth = 200;
+        this.rectHeight = 100;
+        this.borderRadius = 20; 
+
+        // Koordinaty na cetrovanie
         this.rectX = this.cameras.main.centerX;
         this.rectY = this.cameras.main.centerY;
 
+        // Pridá menu obrázok
+        this.addMenuImage();
 
-        //Pridanie menu obrázku/pozadia
+        // Grafika pre útvary
+        var graphics = this.add.graphics();
+
+        // Pridá nadpis hry
+        this.addHeaderText(this.rectX, this.rectY - 200);
+
+        // Vykreslenie Start Game buttonu
+        this.drawButton(graphics, this.rectX, this.rectY - 80);
+        this.addButtonStart(this.rectX, this.rectY - 80, 'Start Game');
+
+        // Vykreslenie About Game buttonu
+        this.drawButton(graphics, this.rectX, this.rectY + 50);
+        this.addButtonAbout(this.rectX, this.rectY + 50, 'About Game');
+
+        // Pridané credits
+        this.addCredits(this.rectX, this.rectY + 290);
+    },
+
+    //METODY PRE VYTVARANIE
+    addMenuImage() {
         this.menuImage = this.add.image(0, 0, 'menu_img');
-        //Prepočty aby to fitlo do okna -> čiže je to responsive :O šalena matematika odo mna
         var scaleX = this.cameras.main.width / this.menuImage.width;
         var scaleY = this.cameras.main.height / this.menuImage.height;
         var scale = Math.max(scaleX, scaleY);
         this.menuImage.setScale(scale).setOrigin(0, 0);
-
-        var graphics = this.add.graphics();
-
-        // Na tvorbu obdlzniku
-        var rectX = this.cameras.main.centerX;
-        var rectY = this.cameras.main.centerY;
-        var rectWidth = 200;
-        var rectHeight = 100;
-        var borderRadius = 20; 
-    
-        // Kreslit obdlznik
-        graphics.fillStyle(0xffffff); 
-        graphics.fillRoundedRect(rectX - rectWidth / 2, rectY - rectHeight / 2, rectWidth, rectHeight, borderRadius);
-    
-        // Pridany Start Button
-        var buttonText = 'Start Game';
-        var buttonStyle = { fill: '#1ac6ff', fontSize: '32px', fontWeight: 'bold', fontFamily: 'Arial' };
-        var startButton = this.add.text(rectX, rectY, buttonText, buttonStyle)
-            .setOrigin(0.5, 0.5)
-            .setInteractive()
-        //.on('pointerdown', () => this.startGame()); //-> Toto nahradíme našou funkciu na štart hry
-
-        //Pridaný About button
-        var buttonText = 'About';
-        var buttonStyle = { fill: '#ffffff', fontSize: '32px', fontWeight: 'bold' };
-        var aboutButton = this.add.text(rectX, rectY + 100, buttonText, buttonStyle)
-        .setOrigin(0.5, 0.5)
-        .setInteractive({ useHandCursor: true })  
-        .on('pointerdown', () => { this.showInfo = !this.showInfo; this.showAboutInfo(); });
     },
 
-    update: function ()
-    {
-        // TODO: Funkcie na update Menu
-        
+    addHeaderText(x, y) {
+        var headerText = 'Happy Submarine';
+        var headerStyle = { fill: '#ffffff', fontSize: '48px', fontFamily: 'Arial' };
+        this.add.text(x, y, headerText, headerStyle).setOrigin(0.5, 0.5);
+    },
+
+    drawButton(graphics, x, y) {
+        graphics.fillStyle(0xffffff); 
+        graphics.fillRoundedRect(x - this.rectWidth / 2 , y - this.rectHeight / 2, this.rectWidth, this.rectHeight, this.borderRadius);
+    },
+
+    addButtonStart(x, y, text) {
+        var buttonStyle = { fill: '#1ac6ff', fontSize: '32px', fontWeight: '900', fontFamily: 'Arial' };
+        var button = this.add.text(x, y, text, buttonStyle)
+            .setOrigin(0.5, 0.5)
+            .setInteractive({ useHandCursor: true })  
+            .on('pointerdown', () => this.scene.start('GameScene'));
+    },
+
+    addButtonAbout(x, y, text) {
+        var buttonStyle = { fill: '#1ac6ff', fontSize: '32px', fontWeight: '900', fontFamily: 'Arial' };
+        var button = this.add.text(x, y, text, buttonStyle)
+            .setOrigin(0.5, 0.5)
+            .setInteractive({ useHandCursor: true })  
+            .on('pointerdown', () => { this.showInfo = !this.showInfo; this.showAboutInfo(); });
+    },
+
+    addCredits(x, y) {
+        var creditsText = 'Created by Patrik Kester & Samuel Kubala';
+        var creditsStyle = { fill: '#ffffff', fontSize: '16px', fontFamily: 'Arial' };
+        this.add.text(x, y, creditsText, creditsStyle).setOrigin(0.5, 0.5);
+    },
+
+    update: function () {
         if (!this.showInfo && this.infoText) {
             this.infoText.setVisible(false);
+            this.graphics.setVisible(false);
         } else if (this.showInfo && this.infoText) {
             this.infoText.setVisible(true);
+            this.graphics.setVisible(true);
         }
     },
 
-    //Funkcia na ukazanie info o hre --> Work IN progress
-   showAboutInfo: function() {
-    if (!this.infoText) {
-        var infoText = 'This is a game created with Phaser.js and Vue.js.'; // Replace this with your own information
-        var infoStyle = { fill: '#000000', fontSize: '16px', fontWeight: 'bold', wordWrap: { width: 200 } }; // Adjust the style as needed
-        this.infoText = this.add.text(this.rectX, this.rectY + 200, infoText, infoStyle).setOrigin(0.8, 0.8);
-    }
-    this.infoText.setVisible(this.showInfo);
-}
+    //METODA PRE UPDATE
+    showAboutInfo() {
+        if (!this.infoText) {
+            var infoText = 'Včera som sa opil a skuril :)'; 
+            var infoStyle = { fill: '#000000', fontSize: '16px', fontWeight: 'bold', wordWrap: { width: 200 } }; 
 
+            this.graphics = this.add.graphics();
+            this.graphics.fillStyle(0xffffff); 
+            this.graphics.fillRoundedRect(this.rectX - this.rectWidth / 2, this.rectY + 180 - this.rectHeight / 2, this.rectWidth, this.rectHeight, this.borderRadius);
+
+            this.infoText = this.add.text(this.rectX, this.rectY + 180, infoText, infoStyle).setOrigin(0.5, 0.5);
+        }
+        this.infoText.setVisible(this.showInfo);
+        this.graphics.setVisible(this.showInfo);
+    },
 });
 
+   
 export default MainMenuScene;
 
