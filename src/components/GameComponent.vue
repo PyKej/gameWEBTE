@@ -1,7 +1,7 @@
 <template>
 
   <div id="game"></div>
-  
+
 </template>
 
 
@@ -12,6 +12,7 @@ import { onMounted } from 'vue';
 import Phaser from 'phaser';
 import Menu from './Menu';
 import Game  from './Game';
+import GameOver from './GameOver';
 
 onMounted(() => {
   const config = {
@@ -21,11 +22,11 @@ onMounted(() => {
     physics: {
       default: 'arcade',
       arcade: {
-        gravity: { y: 300 },
-        debug: false
-      }
+        gravity: { y: 10 },
+        debug: true // TODO toto zmen pri final release na false
+            }
     },
-    scene: [Menu, Game], //Tu potom treba pridať ďalšiu classu do scene -> scene: [Menu, Game]
+    scene: [Game, Menu, GameOver], // TODO treba zmeniť poradie na [Menu, Game....] !! iba kvôli vytvaraniu hry
     parent: 'game' 
   };
   
