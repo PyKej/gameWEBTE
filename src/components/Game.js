@@ -6,6 +6,7 @@ import star from '../assets/star.png';
 import bgMusic from '../assets/bg_music.mp3';
 import starSoundEffect from '../assets/star_sound_effect.mp3';
 import match3 from '../assets/match3.json';
+import explosionSound from '../assets/explosion.mp3';
 
 class GameScene extends Phaser.Scene {
     constructor() {
@@ -15,7 +16,6 @@ class GameScene extends Phaser.Scene {
         this.player;
         this.seaMine;
         this.stars;
-        this.starCount = 0;
 
         // Music
         this.bgMusic;
@@ -39,11 +39,15 @@ class GameScene extends Phaser.Scene {
 
         this.load.audio('bgMusic', bgMusic);
         this.load.audio('starSoundEffect', starSoundEffect);
+        this.load.audio('explosion', explosionSound);
 
         this.load.atlas('match3', star, match3);
     }
 
     create() {
+        //Musí byť sem, pretože pri GameOver sa to neresetne
+        this.starCount = 0;
+
         // background
         this.addBackgroundImage();
 
@@ -88,8 +92,12 @@ class GameScene extends Phaser.Scene {
 
         // bomb explosion
         this.physics.add.overlap(this.player, this.seaMine, () => {
-            this.bgMusic.stop();
-            this.scene.start('GameOverScene');
+            this.sound.play('explosion');
+            // Delay na ostatne riadky pri výbuchu
+            this.time.delayedCall(250, () => {
+                this.bgMusic.stop();
+                this.scene.start('GameOverScene');
+            });
         }, null, this);
 
         // // Variables to store the pointer coordinates
@@ -148,7 +156,9 @@ class GameScene extends Phaser.Scene {
 
 
         // Moving player
-        if (left.isDown) {
+        this.player.setVelocity(0);
+
+         if (left.isDown) {
             this.player.x -= this.playerSpeed;
         }
         if (right.isDown) {
@@ -161,13 +171,14 @@ class GameScene extends Phaser.Scene {
             this.player.y += this.playerSpeed;
         }
         // If no keys are pressed, stop the player
-        if (!left.isDown && !right.isDown) {
-            this.player.setVelocityX(0);
-        }
-        if (!up.isDown && !down.isDown) {
-            this.player.setVelocityY(0);
-        }
 
+        //Ja som to upravil že pojde ponorka sama dolu, ako by asi aj realne šla podla mna
+        //Neviem či sa ti to bude páčiť, ale tak ma napadol nejaky pohyb namiesto komplikovaneho 
+        //spomalovania 
+         else {
+            // Ked nic nestlacam, ponorka ide sama dolu
+            this.player.setVelocityY(50);
+        } 
 
         // // Moving player
         // if (left.isDown) {
