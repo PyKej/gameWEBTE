@@ -6,6 +6,7 @@ import star from '../assets/star.png';
 import bgMusic from '../assets/bg_music.mp3';
 import starSoundEffect from '../assets/star_sound_effect.mp3';
 import explosionSound from '../assets/explosion.mp3';
+import obsticles from '../json/obsticles.json';
 
 class GameScene extends Phaser.Scene {
     constructor() {
@@ -24,7 +25,7 @@ class GameScene extends Phaser.Scene {
 
         // this.emitter;
  
-        this.playerSpeed = 2;
+        this.playerSpeed = 150;
         // this.maxPlayerSpeed = 10;
 
    
@@ -41,6 +42,8 @@ class GameScene extends Phaser.Scene {
         this.load.audio('starSoundEffect', starSoundEffect);
         this.load.audio('explosion', explosionSound);
 
+        this.load.json('obsticles', obsticles);
+
     }
 
     create() {
@@ -55,13 +58,48 @@ class GameScene extends Phaser.Scene {
         this.bombExplosionSetup(); // bomb explosion
 
 
+        // // Create a static physics group
+        // this.obstacles = this.physics.add.staticGroup();
+
+        // // Add a rectangle to the group
+        // // Parameters: x, y, width, height
+        // let obstacle = this.add.rectangle(500, 300, 200, 150, 0xff0000); // Adjust position and size as needed
+        // this.obstacles.add(obstacle);
+
+        let worldWidth = this.game.config.width * 1.8; // Adjust as needed
+        let worldHeight = this.game.config.height; // Adjust as needed
+
+        this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
+
+          // Load enemy data
+        const obsticlesData = this.cache.json.get('obsticles');
+
+        // Create enemies group
+        this.obsticles = this.physics.add.group();
+
+        // Create enemies
+        obsticlesData.enemies.forEach(enemy => {
+            let newObstacle = this.obsticles.create(enemy.x, enemy.y, enemy.type).setImmovable(true);
+            newObstacle.setBounce(1, 1); // Set bounce for each obstacle
+            newObstacle.setCollideWorldBounds(true); // Ensure it collides with world bounds
+            // turn off gravity
+            newObstacle.body.setAllowGravity(false);
+            // newObstacle.setVelocity(Phaser.Math.Between(-200, 200), Phaser.Math.Between(-200, 200)); // Set random velocity for each obstacle
+            // set velociti just up and donw
+            // newObstacle.setVelocity(0, Phaser.Math.Between(-150, 150)); // Set random velocity for each obstacle
+            newObstacle.setVelocity(0, 60);
+        });
+
+        // Collider
+        this.physics.add.collider(this.player, this.obsticles);
+        
+
     }
     
     update() {
         this.oscillatorUpdate(); // Oscillator update
         this.movePlayerUpdate(); // Move the player
-        this.setBoundsUpdate(); // Set the bounds of the player
-
+  
     }
 
     // ********** ADITIONAL FUNCTIONS **********
@@ -123,7 +161,7 @@ class GameScene extends Phaser.Scene {
         // this.player = this.physics.add.image(50, 250, 'submarine').setOrigin(0, 0);
         this.player = this.addScaledImage(50, 250, 'submarine', 80, 80);
         this.player.body.setAllowGravity(false);
-        // this.player.setCollideWorldBounds(true);
+        this.player.setCollideWorldBounds(true);
     }
 
     seaMineSetup() {
@@ -153,50 +191,33 @@ class GameScene extends Phaser.Scene {
         return img;
     }
 
-    setBoundsUpdate(){
-        // Get world bounds
-        const bounds = this.physics.world.bounds;
-
-        // Prevent the submarine from moving beyond the top and bottom bounds
-        if (this.player.y < bounds.top) {
-            this.player.y = bounds.top;
-        } else if (this.player.y > bounds.bottom - this.player.displayHeight) {
-            this.player.y = bounds.bottom - this.player.displayHeight;
-        }
-        else if (this.player.x < bounds.left) {
-            this.player.x = bounds.left;
-        }
-    }
-
     movePlayerUpdate() {
         // for up down left right keys
         const { left, right, up, down } = this.cursor;
-
-         // Moving player
-         this.player.setVelocity(0);
-
-         if (left.isDown) {
-            this.player.x -= this.playerSpeed;
+    
+        // Reset player velocity
+        this.player.setVelocity(0);
+    
+        // Horizontal movement
+        if (left.isDown) {
+            this.player.setVelocityX(-this.playerSpeed);
+        } else if (right.isDown) {
+            this.player.setVelocityX(this.playerSpeed);
         }
-        if (right.isDown) {
-            this.player.x += this.playerSpeed;
-        }
+    
+        // Vertical movement
         if (up.isDown) {
-            this.player.y -= this.playerSpeed;
+            this.player.setVelocityY(-this.playerSpeed);
+        } else if (down.isDown) {
+            this.player.setVelocityY(this.playerSpeed);
         }
-        if (down.isDown) {
-            this.player.y += this.playerSpeed;
+    
+        // Automatic downward movement when no keys are pressed
+        if (!left.isDown && !right.isDown && !up.isDown && !down.isDown) {
+            this.player.setVelocityY(50); // Adjust this value as needed
         }
-        // If no keys are pressed, stop the player
-
-        //Ja som to upravil že pojde ponorka sama dolu, ako by asi aj realne šla podla mna
-        //Neviem či sa ti to bude páčiť, ale tak ma napadol nejaky pohyb namiesto komplikovaneho 
-        //spomalovania 
-         else {
-            // Ked nic nestlacam, ponorka ide sama dolu
-            this.player.setVelocityY(50);
-        } 
     }
+    
 
     oscillatorUpdate() {
         
@@ -245,21 +266,6 @@ class GameScene extends Phaser.Scene {
 
         }, null, this);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

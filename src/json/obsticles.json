@@ -1,0 +1,35 @@
+{
+    "enemies": [
+        {"x": 130, "y": 500, "type": "crate"},
+        {"x": 280, "y": 150, "type": "crate"},
+        {"x": 710, "y": 430, "type": "crate"},
+        {"x": 490, "y": 320, "type": "crate"},
+        {"x": 850, "y": 570, "type": "crate"},
+        {"x": 920, "y": 200, "type": "crate"},
+        {"x": 1150, "y": 400, "type": "crate"},
+        {"x": 1440, "y": 520, "type": "crate"},
+        {"x": 300, "y": 100, "type": "crate"},
+        {"x": 600, "y": 300, "type": "crate"},
+        {"x": 750, "y": 480, "type": "crate"},
+        {"x": 450, "y": 250, "type": "crate"},
+        {"x": 1050, "y": 370, "type": "crate"},
+        {"x": 1230, "y": 550, "type": "crate"},
+        {"x": 1370, "y": 220, "type": "crate"},
+        {"x": 200, "y": 350, "type": "crate"},
+        {"x": 400, "y": 500, "type": "crate"},
+        {"x": 550, "y": 170, "type": "crate"},
+        {"x": 940, "y": 410, "type": "crate"},
+        {"x": 1200, "y": 530, "type": "crate"},
+        {"x": 100, "y": 60, "type": "crate"},
+        {"x": 660, "y": 290, "type": "crate"},
+        {"x": 800, "y": 440, "type": "crate"},
+        {"x": 1300, "y": 310, "type": "crate"},
+        {"x": 150, "y": 550, "type": "crate"},
+        {"x": 360, "y": 400, "type": "crate"},
+        {"x": 510, "y": 230, "type": "crate"},
+        {"x": 1110, "y": 480, "type": "crate"},
+        {"x": 1460, "y": 350, "type": "crate"},
+        {"x": 1340, "y": 120, "type": "crate"}
+      ]
+  }
+  
