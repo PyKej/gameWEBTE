@@ -26,7 +26,7 @@ onMounted(() => {
         debug: true // TODO toto zmen pri final release na false
             }
     },
-    scene: [ Menu, Game, GameOver], // TODO treba zmeniť poradie na [Menu, Game....] !! iba kvôli vytvaraniu hry
+    scene: [ Game, Menu, GameOver], // TODO treba zmeniť poradie na [Menu, Game....] !! iba kvôli vytvaraniu hry
     parent: 'game' 
   };
   

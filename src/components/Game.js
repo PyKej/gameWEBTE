@@ -5,7 +5,6 @@ import seaMine from '../assets/sea_mine.png';
 import star from '../assets/star.png';
 import bgMusic from '../assets/bg_music.mp3';
 import starSoundEffect from '../assets/star_sound_effect.mp3';
-import match3 from '../assets/match3.json';
 import explosionSound from '../assets/explosion.mp3';
 
 class GameScene extends Phaser.Scene {
@@ -23,7 +22,7 @@ class GameScene extends Phaser.Scene {
 
         this.cursor;
 
-        this.emitter;
+        // this.emitter;
  
         this.playerSpeed = 2;
         // this.maxPlayerSpeed = 10;
@@ -36,43 +35,64 @@ class GameScene extends Phaser.Scene {
         this.load.image('submarine', submarine);
         this.load.image('sea_mine', seaMine);
         this.load.image('star', star);
+        this.load.image('spark', star);
 
         this.load.audio('bgMusic', bgMusic);
         this.load.audio('starSoundEffect', starSoundEffect);
         this.load.audio('explosion', explosionSound);
 
-        this.load.atlas('match3', star, match3);
     }
 
     create() {
+
+        this.addBackgroundImageSetup(); // background
+        this.allSoundSetup(); // sound
+        this.cursor = this.input.keyboard.createCursorKeys(); // keyboard tracking
+        this.playerSetup(); // player
+        this.seaMineSetup(); // sea mine
+        this.cameraSetup();  // Setup the camera
+        this.starSetup(); // stars
+        this.bombExplosionSetup(); // bomb explosion
+
+
+    }
+    
+    update() {
+        this.oscillatorUpdate(); // Oscillator update
+        this.movePlayerUpdate(); // Move the player
+        this.setBoundsUpdate(); // Set the bounds of the player
+
+    }
+
+    // ********** ADITIONAL FUNCTIONS **********
+
+    // background image
+    addBackgroundImageSetup() {
+        this.menuImage = this.add.image(0, 0, 'gameBg');
+        var scaleX = this.cameras.main.width / this.menuImage.width;
+        var scaleY = this.cameras.main.height / this.menuImage.height;
+        var scale = Math.max(scaleX, scaleY);
+        this.menuImage.setScale(scale).setOrigin(0, 0);
+        this.menuImage.setScrollFactor(0);
+    }
+
+    // TODO redoo stars
+    starSetup() {
         //Musí byť sem, pretože pri GameOver sa to neresetne
         this.starCount = 0;
 
-        // background
-        this.addBackgroundImage();
+        // star --------------------------------
+        this.star = this.addScaledImage(400, 250, 'star', 50, 50);
+        this.star.originalY = this.star.y; // Set the originalY
+        this.star.oscillationSpeed = Phaser.Math.FloatBetween(0.001, 0.008);
+        this.star.oscillationRange = Phaser.Math.FloatBetween(1, 20);
 
-        // music
-        this.bgMusic = this.sound.add('bgMusic');
-        this.bgMusic.play();
-        this.bgMusic.loop = true;
-        this.bgMusic.volume = 0.2;
 
-        this.starSoundEffect = this.sound.add('starSoundEffect');
-        
+        // this.star = this.addScaledImage(400, 250, 'star', 50, 50);
+        // this.star.oscillationSpeed = Phaser.Math.FloatBetween(0.001, 0.008);
+        // this.star.oscillationRange = Phaser.Math.FloatBetween(1, 30);
+        this.star.body.setAllowGravity(false);
 
-        // keyboard tracking
-        this.cursor = this.input.keyboard.createCursorKeys();
-
-        // player
-        this.player = this.physics.add.image(50, 250, 'submarine').setOrigin(0, 0);
-        // this.player.setImovable(true);
-        this.player.body.setAllowGravity(false);
-        this.player.setCollideWorldBounds(true);
-
-        // sea mine
-        this.seaMine = this.physics.add.image(400, 250, 'sea_mine').setOrigin(0, 0);
-        this.seaMine.body.setAllowGravity(false);
-        
         // stars
         this.stars = this.physics.add.group({
             key: 'star',
@@ -87,76 +107,73 @@ class GameScene extends Phaser.Scene {
         });
 
         // collect stars
+        this.physics.add.overlap(this.player, this.star, this.collectStar, null, this);
+
+
         this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.starScore = this.add.text(16, 16, 'Stars: 0', { fontSize: '32px', fill: '#000' });
+        this.starScore.setScrollFactor(0);
 
-        // bomb explosion
-        this.physics.add.overlap(this.player, this.seaMine, () => {
-            this.sound.play('explosion');
-            // Delay na ostatne riadky pri výbuchu
-            this.time.delayedCall(250, () => {
-                this.bgMusic.stop();
-                this.scene.start('GameOverScene');
-            });
-        }, null, this);
-
-        // // Variables to store the pointer coordinates
-        // let pointerX = 400;
-        // let pointerY = 300;
-
-        //  // Event listener for pointer down event
-        // this.input.on('pointerdown', pointer => {
-        //     pointerX = pointer.worldX;
-        //     pointerY = pointer.worldY;
-        // });
-
-        //  // Add particle system
-        //  this.add.particles('match3', {
-        //     x: () => pointerX,
-        //     y: () => pointerY,
-        //     frame: 'Match3_Icon_09',
-        //     speed: 200,
-        //     lifespan: 2000,
-        //     gravityY: 200,
-        //     scale: 0.5
-        // });
-
-
-
-        // TODO colliders for now just experimenting
-        this.physics.add.collider(this.player, this.seaMine);
-        this.physics.add.collider(this.stars, this.seaMine);
-        this.physics.add.collider(this.stars, this.player);
-
+        // ----------------------- 
 
     }
+
+    playerSetup(){
+        // player
+        // this.player = this.physics.add.image(50, 250, 'submarine').setOrigin(0, 0);
+        this.player = this.addScaledImage(50, 250, 'submarine', 80, 80);
+        this.player.body.setAllowGravity(false);
+        // this.player.setCollideWorldBounds(true);
+    }
+
+    seaMineSetup() {
+        this.seaMine = this.addScaledImage(400, 250, 'sea_mine', 50, 50);
+        this.seaMine.body.setAllowGravity(false);
+    }
     
-    update() {
+    collectStar(player, star) {
+        // star collected
+        star.disableBody(true, true);
+        this.starCount += 1;
+        this.starSoundEffect.play();
+        this.starScore.setText('Stars: ' + this.starCount);
+    }
+
+    addScaledImage(x, y, imageKey, desiredWidth, desiredHeight) {
+        // Create a physics image instead of a standard image
+        let img = this.physics.add.image(x, y, imageKey);
+    
+        // Calculate scale factors to reach the desired width and height
+        var scaleX = desiredWidth / img.width;
+        var scaleY = desiredHeight / img.height;
+    
+        // Set the scale and origin of the image
+        img.setScale(scaleX, scaleY).setOrigin(0, 0);
+    
+        return img;
+    }
+
+    setBoundsUpdate(){
+        // Get world bounds
+        const bounds = this.physics.world.bounds;
+
+        // Prevent the submarine from moving beyond the top and bottom bounds
+        if (this.player.y < bounds.top) {
+            this.player.y = bounds.top;
+        } else if (this.player.y > bounds.bottom - this.player.displayHeight) {
+            this.player.y = bounds.bottom - this.player.displayHeight;
+        }
+        else if (this.player.x < bounds.left) {
+            this.player.x = bounds.left;
+        }
+    }
+
+    movePlayerUpdate() {
         // for up down left right keys
         const { left, right, up, down } = this.cursor;
 
-        // oscillating stars
-        this.stars.children.iterate(function (child) {
-            child.y = child.originalY + Math.sin(this.time.now * child.oscillationSpeed) * child.oscillationRange;
-        }, this);
-
-        // //moveing player
-        // if (left.isDown) {
-        //     this.player.x -= this.playerSpeed;
-        // } else if (right.isDown) {
-        //     this.player.x += this.playerSpeed;
-        // } else if (up.isDown) {
-        //     this.player.y -= this.playerSpeed;
-        // } else if (down.isDown) {
-        //     this.player.y += this.playerSpeed;
-        // } else {
-        //     this.player.setVelocityX(0);
-        //     this.player.setVelocityY(0);
-        // }
-
-
-        // Moving player
-        this.player.setVelocity(0);
+         // Moving player
+         this.player.setVelocity(0);
 
          if (left.isDown) {
             this.player.x -= this.playerSpeed;
@@ -179,66 +196,81 @@ class GameScene extends Phaser.Scene {
             // Ked nic nestlacam, ponorka ide sama dolu
             this.player.setVelocityY(50);
         } 
-
-        // // Moving player
-        // if (left.isDown) {
-        //     this.player.x -= this.playerSpeed;
-        //     this.playerSpeed = this.maxPlayerSpeed;
-        // } else if (right.isDown) {
-        //     this.player.x += this.playerSpeed;
-        //     this.playerSpeed = this.maxPlayerSpeed;
-        // } else if (up.isDown) {
-        //     this.player.y -= this.playerSpeed;
-        //     this.playerSpeed = this.maxPlayerSpeed;
-        // } else if (down.isDown) {
-        //     this.player.y += this.playerSpeed;
-        //     this.playerSpeed = this.maxPlayerSpeed;
-        // } else {
-        //     // Slowly stop player from any direction
-        //     if (this.playerSpeed > 0) {
-        //         this.playerSpeed -= 0.0000000000000000000000001; // Increase this value for faster deceleration
-        //     } else {
-        //         this.playerSpeed = 0;
-        //     }
-        // }
-
-
-
     }
 
-    // ***** ADITIONAL FUNCTIONS *****
+    oscillatorUpdate() {
+        
+        // oscillating stars
+        this.stars.children.iterate(function (child) {
+            child.y = child.originalY + Math.sin(this.time.now * child.oscillationSpeed) * child.oscillationRange;
+        }, this);
 
-    // background image
-    addBackgroundImage() {
-        this.menuImage = this.add.image(0, 0, 'gameBg');
-        var scaleX = this.cameras.main.width / this.menuImage.width;
-        var scaleY = this.cameras.main.height / this.menuImage.height;
-        var scale = Math.max(scaleX, scaleY);
-        this.menuImage.setScale(scale).setOrigin(0, 0);
+        // oscillating individual star
+        if (this.star.originalY !== undefined) {
+            this.star.y = this.star.originalY + Math.sin(this.time.now * this.star.oscillationSpeed) * this.star.oscillationRange;
+        }
     }
 
-    
-    // star collected
-    collectStar(player, star) {
-        star.disableBody(true, true);
-        this.starCount += 1;
-        this.starSoundEffect.play();
-        this.starScore.setText('Stars: ' + this.starCount);
+    allSoundSetup() {
+        // music
+        this.bgMusic = this.sound.add('bgMusic');
+        this.bgMusic.play();
+        this.bgMusic.loop = true;
+        this.bgMusic.volume = 0.2;
 
+        this.starSoundEffect = this.sound.add('starSoundEffect');
 
-         // Emit particles at the location of the collected star
-        //  this.particles.createEmitter({
-        //     frame: 'Match3_Icon_09', // Use a frame from the 'match3' atlas
-        //     x: star.x,
-        //     y: star.y,
-        //     lifespan: 1000,
-        //     speed: { min: -100, max: 100 },
-        //     angle: { min: 0, max: 360 },
-        //     scale: { start: 0.5, end: 0 },
-        //     quantity: 10,
-        //     blendMode: 'ADD'
-        // });
+        this.explosion = this.sound.add('explosion');
+        this.explosion.volume = 0.4;
+
+        
     }
+
+    cameraSetup() {
+        // Set up the camera
+        this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+        this.cameras.main.setFollowOffset(-200, 0); // Adjust if needed
+        this.cameras.main.setBounds(0, 0, this.game.config.width * 10, this.game.config.height); // Adjust world bounds as needed
+    }
+
+    bombExplosionSetup() {
+         // bomb explosion
+         this.physics.add.overlap(this.player, this.seaMine, () => {
+            this.explosion.play();
+            // Delay na ostatne riadky pri výbuchu
+            this.time.delayedCall(500, () => {
+                this.bgMusic.stop();
+                this.scene.start('GameOverScene');
+            });
+
+        }, null, this);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
