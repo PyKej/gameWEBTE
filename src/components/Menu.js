@@ -75,7 +75,7 @@ var MainMenuScene = new Phaser.Class({
         var button = this.add.text(x, y, text, buttonStyle)
             .setOrigin(0.5, 0.5)
             .setInteractive({ useHandCursor: true })  
-            .on('pointerdown', () => this.scene.start('GameScene'));
+            .on('pointerdown', () => this.scene.start('Manual'));
     },
 
     addButtonAbout(x, y, text) {

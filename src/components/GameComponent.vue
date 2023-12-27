@@ -13,6 +13,7 @@ import Phaser from 'phaser';
 import Menu from './Menu';
 import Game  from './Game';
 import GameOver from './GameOver';
+import Manual from './Manual';
 
 onMounted(() => {
   const config = {
@@ -26,7 +27,7 @@ onMounted(() => {
         debug: true // TODO toto zmen pri final release na false
             }
     },
-    scene: [ Game, Menu, GameOver], // TODO treba zmeniť poradie na [Menu, Game....] !! iba kvôli vytvaraniu hry
+    scene: [Menu , Manual ,Game, GameOver], // TODO treba zmeniť poradie na [Menu, Game....] !! iba kvôli vytvaraniu hry
     parent: 'game' 
   };
   
