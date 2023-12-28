@@ -15,39 +15,45 @@ import Game  from './Game';
 import GameOver from './GameOver';
 import Manual from './Manual';
 
+let game; // Declare the game variable in the outer scope
+
 onMounted(() => {
   const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    width: window.innerWidth, // Set the game width to the window width
+    height: window.innerHeight, // Set the game height to the window height
     physics: {
       default: 'arcade',
       arcade: {
         gravity: { y: 10 },
         debug: true // TODO toto zmen pri final release na false
-            }
+      }
     },
-    scene: [Menu , Manual ,Game, GameOver], // TODO treba zmeniť poradie na [Menu, Game....] !! iba kvôli vytvaraniu hry
+    scene: [Menu , Manual ,Game, GameOver ], // TODO treba zmeniť poradie na [Menu, Game....] !! iba kvôli vytvaraniu hry
     parent: 'game', 
-
     scale: {
-      mode: Phaser.Scale.FIT,
+      mode: Phaser.Scale.RESIZE, // Set the scale mode to RESIZE
       autoCenter: Phaser.Scale.CENTER_BOTH
     }
-     
   };
   
-  new Phaser.Game(config);
+  game = new Phaser.Game(config); // Assign the new Phaser game instance to the game variable
 });
+
+window.addEventListener('resize', () => {
+  if (game && game.scale) { 
+    game.scale.resize(window.innerWidth, window.innerHeight);
+  }
+});
+
+
+
 </script>
 
 
 
 <style scoped>
-#game {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+
+
+
 </style>

@@ -18,13 +18,13 @@ class GameOverScene extends Phaser.Scene {
     create() {
         // Create objects here
         // Constanty ktore su properties sceny
-        this.rectWidth = 200;
-        this.rectHeight = 100;
+        this.rectWidth = this.scale.width * 0.35; // 25% of the game width
+        this.rectHeight = this.scale.height * 0.167; // 16.7% of the game height
         this.borderRadius = 20; 
 
         // Koordinaty na cetrovanie
-        this.rectX = this.cameras.main.centerX;
-        this.rectY = this.cameras.main.centerY;
+        this.rectX = this.scale.width / 2; // Center of the game width
+        this.rectY = this.scale.height / 2; // Center of the game height
 
 
         // Grafika pre útvary
@@ -42,23 +42,27 @@ class GameOverScene extends Phaser.Scene {
         this.addHeaderText2(this.rectX, this.rectY - 110);
 
         //Pridané Restart button
-        this.drawButton(graphics, this.rectX, this.rectY + 150);
-        this.addButtonRestart(this.rectX, this.rectY + 150, 'Restart');
+        this.drawButton(graphics, this.rectX, this.rectY + 160);
+        this.addButtonRestart(this.rectX, this.rectY + 160, 'Restart');
 
 
     }
     
     addSkullImages() {
+        // Image dimensions
+        var imgWidth = 90;
+        var imgHeight = 120;
+    
         // Lavo-Hore 
         this.addSkullImage(0, 0);
         // Pravo-Hore
-        this.addSkullImage(800 - 90, 0);
+        this.addSkullImage(this.scale.width - imgWidth, 0);
         // Lavo-dole
-        this.addSkullImage(0, 600 - 120);
+        this.addSkullImage(0, this.scale.height - imgHeight - 30);
         // Pravo-dole 
-        this.addSkullImage(800 - 90, 600 - 120);
+        this.addSkullImage(this.scale.width - imgWidth, this.scale.height - imgHeight - 30);
         // Do textu
-        this.addSkullImage(355, 245);
+        this.addSkullImage(this.scale.width / 2 - imgWidth / 2, this.scale.height / 2 - imgHeight / 2);
     }
 
 

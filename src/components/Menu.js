@@ -61,7 +61,7 @@ var MainMenuScene = new Phaser.Class({
 
     addHeaderText(x, y) {
         var headerText = 'Happy Submarine';
-        var headerStyle = { fill: '#ffffff', fontSize: '48px', fontFamily: 'Arial' };
+        var headerStyle = { fill: '#ffffff', fontSize: '4em', fontFamily: 'Arial' };
         this.add.text(x, y, headerText, headerStyle).setOrigin(0.5, 0.5);
     },
 
