@@ -74,16 +74,26 @@ var MainMenuScene = new Phaser.Class({
         var buttonStyle = { fill: '#1ac6ff', fontSize: '32px', fontWeight: '900', fontFamily: 'Arial' };
         var button = this.add.text(x, y, text, buttonStyle)
             .setOrigin(0.5, 0.5)
-            .setInteractive({ useHandCursor: true })  
+
+            var buttonBackground = this.add.rectangle(x, y, this.rectWidth, this.rectHeight)
+            .setOrigin(0.5, 0.5)
+            .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => this.scene.start('Manual'));
+    
+        this.children.bringToTop(button);
     },
 
     addButtonAbout(x, y, text) {
         var buttonStyle = { fill: '#1ac6ff', fontSize: '32px', fontWeight: '900', fontFamily: 'Arial' };
         var button = this.add.text(x, y, text, buttonStyle)
             .setOrigin(0.5, 0.5)
-            .setInteractive({ useHandCursor: true })  
+
+            var buttonBackground = this.add.rectangle(x, y, this.rectWidth, this.rectHeight)
+            .setOrigin(0.5, 0.5)
+            .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => { this.showInfo = !this.showInfo; this.showAboutInfo(); });
+    
+        this.children.bringToTop(button);
     },
 
     addCredits(x, y) {

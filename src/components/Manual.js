@@ -74,14 +74,11 @@ class ManualScene extends Phaser.Scene {
     addImages() {
         
         var imgWidth = 80;
-        var imgHeight = 80;
-        var starImgWidth = 70;
-        var starImgHeight = 70;
     
         this.addImage(this.scale.width/2 - 40 , this.scale.height * 0.3367, 'arrKeys'); 
         this.addStarImage(this.scale.width/2 - 35, this.scale.height * 0.51, 'starImg'); 
-        this.addImage(this.scale.width * 0.0375, this.scale.height * 0.05, 'submarineImg'); 
-        this.addImage(this.scale.width * 0.8375, this.scale.height * 0.05, 'submarineImg'); 
+        this.addImage(0, 0, 'submarineImg'); 
+        this.addImage(this.scale.width - imgWidth, 0 , 'submarineImg'); 
         this.addImage(this.scale.width/2 - 40, this.scale.height * 0.6867, 'seaMine'); 
     }
     
@@ -114,7 +111,7 @@ class ManualScene extends Phaser.Scene {
     //Header 2 
     addHeaderText2(x, y) {
         var headerText = 'HAPPY SUBMARINE';
-        var headerStyle = { fill: '#ffffff', fontSize: '4em', fontFamily: 'Arial' };
+        var headerStyle = { fill: '#ffffff', fontSize: '3em', fontFamily: 'Arial' };
         this.add.text(x, y, headerText, headerStyle).setOrigin(0.5, 0.5);
     }
 
@@ -136,6 +133,12 @@ class ManualScene extends Phaser.Scene {
     
         graphics.lineStyle(4, 0xFFFFFF);
         graphics.strokeRoundedRect(x - this.buttonWidth / 2 , y - this.buttonHeight / 2, this.buttonWidth, this.buttonHeight, this.borderRadius);
+        graphics.setInteractive(new Phaser.Geom.Rectangle(x - this.buttonWidth / 2, y - this.buttonHeight / 2, this.buttonWidth, this.buttonHeight), Phaser.Geom.Rectangle.Contains)
+        .setInteractive({ useHandCursor: true })
+
+        graphics.on('pointerdown', () => {
+            this.scene.start('GameScene');
+        });
     }
     
 
@@ -154,8 +157,13 @@ class ManualScene extends Phaser.Scene {
         var buttonStyle = { fill: '#1ac6ff', fontSize: '2.5em', fontWeight: '900', fontFamily: 'Arial' };
         var button = this.add.text(x, y, text, buttonStyle)
             .setOrigin(0.5, 0.5)
-            .setInteractive({ useHandCursor: true })  
+            
+            var buttonBackground = this.add.rectangle(x, y, this.buttonWidth, this.buttonHeightHeight)
+            .setOrigin(0.5, 0.5)
+            .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => this.scene.start('GameScene'));
+    
+        this.children.bringToTop(button);
     }
 
 

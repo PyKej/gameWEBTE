@@ -54,6 +54,12 @@ window.addEventListener('resize', () => {
 
 <style scoped>
 
-
+#game{
+  margin: 0 !important; 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 </style>

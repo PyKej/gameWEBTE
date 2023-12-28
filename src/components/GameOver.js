@@ -98,15 +98,27 @@ class GameOverScene extends Phaser.Scene {
         graphics.lineStyle(2, 0xFFFFFF);
         // Kresli border
         graphics.strokeRoundedRect(x - this.rectWidth / 2 , y - this.rectHeight / 2, this.rectWidth, this.rectHeight, this.borderRadius);
+
+        graphics.setInteractive(new Phaser.Geom.Rectangle(x - this.rectWidth / 2, y - this.rectHeight / 2, this.rectWidth, this.rectHeight), Phaser.Geom.Rectangle.Contains)
+        .setInteractive({ useHandCursor: true })
+
+        graphics.on('pointerdown', () => {
+            this.scene.start('GameScene');
+        });
     }
 
     //Pridaný button RESTART
     addButtonRestart(x, y, text) {
         var buttonStyle = { fill: '#ffffff', fontSize: '32px', fontWeight: '900', fontFamily: 'Arial' };
         var button = this.add.text(x, y, text, buttonStyle)
+            .setOrigin(0.5, 0.5);
+    
+        var buttonBackground = this.add.rectangle(x, y, this.rectWidth, this.rectHeight)
             .setOrigin(0.5, 0.5)
-            .setInteractive({ useHandCursor: true })  
+            .setInteractive({ useHandCursor: true })
             .on('pointerdown', () => this.scene.start('GameScene'));
+    
+        this.children.bringToTop(button);
     }
 
 
