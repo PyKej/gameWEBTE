@@ -28,7 +28,13 @@ onMounted(() => {
             }
     },
     scene: [Menu , Manual ,Game, GameOver], // TODO treba zmeniť poradie na [Menu, Game....] !! iba kvôli vytvaraniu hry
-    parent: 'game' 
+    parent: 'game', 
+
+    scale: {
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH
+    }
+     
   };
   
   new Phaser.Game(config);
