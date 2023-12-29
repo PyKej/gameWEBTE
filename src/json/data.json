@@ -1,0 +1,68 @@
+{
+    "woodenLevel": {
+        "name": "Drevená úroveň",
+        "start": {"x": 100, "y": 100},
+        "finish": {"x": 1500, "y": 100},
+        "playerSpeed": 200,
+        "widthOfLevelMultiplayer": 1.8,
+        "heightOfLevelMultiplayer": 1, 
+        "woodenObstacleSmall": [
+            {"x": 130, "y": 500, "type": "wooden_obsticle_small"},
+            {"x": 710, "y": 430, "type": "wooden_obsticle_small"},
+            {"x": 490, "y": 320, "type": "wooden_obsticle_small"},
+            {"x": 850, "y": 570, "type": "wooden_obsticle_small"},
+            {"x": 1150, "y": 400, "type": "wooden_obsticle_small"},
+            {"x": 1440, "y": 520, "type": "wooden_obsticle_small"},
+            {"x": 300, "y": 100, "type": "wooden_obsticle_small"},
+            {"x": 600, "y": 300, "type": "wooden_obsticle_small"},
+            {"x": 750, "y": 480, "type": "wooden_obsticle_small"},
+            {"x": 450, "y": 250, "type": "wooden_obsticle_small"},
+            {"x": 1050, "y": 370, "type": "wooden_obsticle_small"},
+            {"x": 1230, "y": 550, "type": "wooden_obsticle_small"},
+            {"x": 1370, "y": 220, "type": "wooden_obsticle_small"},
+            {"x": 200, "y": 350, "type": "wooden_obsticle_small"},
+            {"x": 400, "y": 500, "type": "wooden_obsticle_small"},
+            {"x": 550, "y": 170, "type": "wooden_obsticle_small"},
+            {"x": 940, "y": 410, "type": "wooden_obsticle_small"},
+            {"x": 1200, "y": 530, "type": "wooden_obsticle_small"},
+            {"x": 100, "y": 60, "type": "wooden_obsticle_small"},
+            {"x": 660, "y": 290, "type": "wooden_obsticle_small"},
+            {"x": 800, "y": 440, "type": "wooden_obsticle_small"},
+            {"x": 1300, "y": 310, "type": "wooden_obsticle_small"},
+            {"x": 150, "y": 550, "type": "wooden_obsticle_small"},
+            {"x": 360, "y": 400, "type": "wooden_obsticle_small"},
+            {"x": 510, "y": 230, "type": "wooden_obsticle_small"},
+            {"x": 1110, "y": 480, "type": "wooden_obsticle_small"},
+            {"x": 1460, "y": 350, "type": "wooden_obsticle_small"},
+            {"x": 1340, "y": 120, "type": "wooden_obsticle_small"}
+        ],
+        "woodenObstacleMedium": [
+            {"x": 280, "y": 150, "type": "wooden_obsticle_small"},
+            {"x": 920, "y": 200, "type": "wooden_obsticle_small"}
+        ],
+        "woodenObstacleLarge": [
+            {"x": 280, "y": 150, "type": "wooden_obsticle_small"},
+            {"x": 920, "y": 200, "type": "wooden_obsticle_small"}
+        ]
+    },
+    "bombLevel": {
+        "woodenObstacleSmall": [
+            {"x": 130, "y": 500, "type": "wooden_obsticle_small"},
+            {"x": 710, "y": 430, "type": "wooden_obsticle_small"}
+        ],
+        "woodenObstacleMedium": [],
+        "bombObsticle": [
+        {"x": 100, "y": 500, "type": "wooden_obsticle_small"},
+        {"x": 310, "y": 430, "type": "wooden_obsticle_small"},
+        {"x": 590, "y": 330, "type": "wooden_obsticle_small"},
+        {"x": 80, "y": 870, "type": "wooden_obsticle_small"},
+      
+        {"x": 130, "y": 120, "type": "wooden_obsticle_small"}
+        ],
+        "woodenObstacleLarge": [
+            {"x": 280, "y": 300, "type": "wooden_obsticle_small"},
+            {"x": 924, "y": 20, "type": "wooden_obsticle_small"}
+        ]
+    }   
+}   
+  

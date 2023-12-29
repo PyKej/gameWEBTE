@@ -3,10 +3,15 @@ import gameBg from '../assets/game_bcg2.png';
 import submarine from '../assets/submarine.png';
 import seaMine from '../assets/sea_mine.png';
 import star from '../assets/star.png';
+import woodenObstacleSmall from '../assets/wooden_obstacle_small.png';
+import woodenObstacleMedium from '../assets/wooden_obstacle_medium.png';
+import woodenObstacleLarge from '../assets/wooden_obstacle_large.png';
+
 import bgMusic from '../assets/bg_music.mp3';
 import starSoundEffect from '../assets/star_sound_effect.mp3';
 import explosionSound from '../assets/explosion.mp3';
-import obsticles from '../json/obsticles.json';
+import data from '../json/data.json';
+
 
 class GameScene extends Phaser.Scene {
     constructor() {
@@ -17,6 +22,12 @@ class GameScene extends Phaser.Scene {
         this.seaMine;
         this.stars;
 
+
+        // this.woodenObstacleSmall;
+        // this.woodenObstacleMedium;
+        // this.woodenObstacleLarge;
+
+
         // Music
         this.bgMusic;
         this.starSoundEffect;
@@ -24,10 +35,11 @@ class GameScene extends Phaser.Scene {
         this.cursor;
 
         // this.emitter;
- 
-        this.playerSpeed = 150;
-        // this.maxPlayerSpeed = 10;
+        
 
+       
+
+        
    
     }
 
@@ -37,17 +49,30 @@ class GameScene extends Phaser.Scene {
         this.load.image('sea_mine', seaMine);
         this.load.image('star', star);
         this.load.image('spark', star);
+        this.load.image('wooden_obstacle_small', woodenObstacleSmall);
+        this.load.image('wooden_obstacle_medium', woodenObstacleMedium);
+        this.load.image('wooden_obstacle_large', woodenObstacleLarge);
 
         this.load.audio('bgMusic', bgMusic);
         this.load.audio('starSoundEffect', starSoundEffect);
         this.load.audio('explosion', explosionSound);
 
-        this.load.json('obsticles', obsticles);
+        this.load.json('data', data);
 
     }
 
     create() {
+        this.levelData = data.woodenLevel;
+        // let levelData = data.bombLevel;
 
+
+        // Parameters
+        this.playerSpeed = this.levelData.playerSpeed; // Parameter for player speed
+        // this.widthOfLevelMultiplayer = 1.8; // Multiplayer for width of level calculated for worldWidth
+        // this.heightOfLevelMultiplayer = 1; // Multiplayer for height of level calculated for worldHeight
+
+
+        this.boundsSetup(); // bounds
         this.addBackgroundImageSetup(); // background
         this.allSoundSetup(); // sound
         this.cursor = this.input.keyboard.createCursorKeys(); // keyboard tracking
@@ -57,41 +82,11 @@ class GameScene extends Phaser.Scene {
         this.starSetup(); // stars
         this.bombExplosionSetup(); // bomb explosion
 
+        this.processLevelData(this.levelData);
 
-        // // Create a static physics group
-        // this.obstacles = this.physics.add.staticGroup();
+    
 
-        // // Add a rectangle to the group
-        // // Parameters: x, y, width, height
-        // let obstacle = this.add.rectangle(500, 300, 200, 150, 0xff0000); // Adjust position and size as needed
-        // this.obstacles.add(obstacle);
-
-        let worldWidth = this.game.config.width * 1.8; // Adjust as needed
-        let worldHeight = this.game.config.height; // Adjust as needed
-
-        this.physics.world.setBounds(0, 0, worldWidth, worldHeight);
-
-          // Load enemy data
-        const obsticlesData = this.cache.json.get('obsticles');
-
-        // Create enemies group
-        this.obsticles = this.physics.add.group();
-
-        // Create enemies
-        obsticlesData.enemies.forEach(enemy => {
-            let newObstacle = this.obsticles.create(enemy.x, enemy.y, enemy.type).setImmovable(true);
-            newObstacle.setBounce(1, 1); // Set bounce for each obstacle
-            newObstacle.setCollideWorldBounds(true); // Ensure it collides with world bounds
-            // turn off gravity
-            newObstacle.body.setAllowGravity(false);
-            // newObstacle.setVelocity(Phaser.Math.Between(-200, 200), Phaser.Math.Between(-200, 200)); // Set random velocity for each obstacle
-            // set velociti just up and donw
-            // newObstacle.setVelocity(0, Phaser.Math.Between(-150, 150)); // Set random velocity for each obstacle
-            newObstacle.setVelocity(0, 60);
-        });
-
-        // Collider
-        this.physics.add.collider(this.player, this.obsticles);
+     
         
 
     }
@@ -102,10 +97,60 @@ class GameScene extends Phaser.Scene {
   
     }
 
+
+    processLevelData(levelData) {
+        this.groupWoodenObstacleSmall = this.physics.add.group({
+            bounceX: 1,
+            bounceY: 1,
+            collideWorldBounds: true
+        });
+        this.groupWoodenObstacleMedium = this.physics.add.group({
+            immovable: true,
+            collideWorldBounds: true
+        });
+    
+        // Create small wooden obstacles
+        levelData.woodenObstacleSmall.forEach(obstacle => {
+            let newObstacle = this.groupWoodenObstacleSmall.create(obstacle.x, obstacle.y, 'wooden_obstacle_small');
+            newObstacle.setDisplaySize(50, 50);
+            newObstacle.body.setAllowGravity(false);
+            newObstacle.setImmovable(true);
+            newObstacle.setVelocity(0, 60);
+        });
+    
+        // Create medium wooden obstacles
+        levelData.woodenObstacleMedium.forEach(obstacle => {
+            let newObstacle = this.groupWoodenObstacleMedium.create(obstacle.x, obstacle.y, 'wooden_obstacle_medium');
+            newObstacle.setDisplaySize(125, 75);
+            newObstacle.body.setAllowGravity(false);
+            newObstacle.setVelocity(0, 0);
+    
+        });
+    
+    
+    
+    
+    
+        // Add colliders
+        this.physics.add.collider(this.player, this.groupWoodenObstacleSmall);
+        this.physics.add.collider(this.player, this.groupWoodenObstacleMedium);
+        
+    }
+
     // ********** ADITIONAL FUNCTIONS **********
 
-    // background image
+    boundsSetup() {
+        // setup bounds for the intire game
+        this.worldWidth = this.game.config.width * this.levelData.widthOfLevelMultiplayer; 
+        this.worldHeight = this.game.config.height *this.levelData.heightOfLevelMultiplayer; 
+
+        this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
+
+    }
+
+    
     addBackgroundImageSetup() {
+        // background image
         this.menuImage = this.add.image(0, 0, 'gameBg');
         var scaleX = this.cameras.main.width / this.menuImage.width;
         var scaleY = this.cameras.main.height / this.menuImage.height;
