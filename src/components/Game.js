@@ -1,15 +1,22 @@
 import Phaser from 'phaser'
+
 import gameBg from '../assets/game_bcg2.png';
+
 import submarine from '../assets/submarine.png';
+
 import seaMine from '../assets/sea_mine.png';
 import star from '../assets/star.png';
 import woodenObstacleSmall from '../assets/wooden_obstacle_small.png';
 import woodenObstacleMedium from '../assets/wooden_obstacle_medium.png';
 import woodenObstacleLarge from '../assets/wooden_obstacle_large.png';
 
+import finish from '../assets/finish.png';
+
+
 import bgMusic from '../assets/bg_music.mp3';
 import starSoundEffect from '../assets/star_sound_effect.mp3';
 import explosionSound from '../assets/explosion.mp3';
+
 import data from '../json/data.json';
 
 
@@ -52,6 +59,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('wooden_obstacle_small', woodenObstacleSmall);
         this.load.image('wooden_obstacle_medium', woodenObstacleMedium);
         this.load.image('wooden_obstacle_large', woodenObstacleLarge);
+        this.load.image('finish', finish);
 
         this.load.audio('bgMusic', bgMusic);
         this.load.audio('starSoundEffect', starSoundEffect);
@@ -77,14 +85,14 @@ class GameScene extends Phaser.Scene {
         this.allSoundSetup(); // sound
         this.cursor = this.input.keyboard.createCursorKeys(); // keyboard tracking
         this.playerSetup(); // player
-        this.seaMineSetup(); // sea mine
+        // this.seaMineSetup(); // sea mine
         this.cameraSetup();  // Setup the camera
-        this.starSetup(); // stars
+        this.starScoreSetup(); // stars
+        this.finishSetup(); // finish
+
+        this.processLevelData();
         this.bombExplosionSetup(); // bomb explosion
-
-        this.processLevelData(this.levelData);
-
-    
+        this.createBorder(); // border
 
      
         
@@ -93,12 +101,13 @@ class GameScene extends Phaser.Scene {
     
     update() {
         this.oscillatorUpdate(); // Oscillator update
+        this.checkBoundaryCollision(); // New function to check boundary collision
         this.movePlayerUpdate(); // Move the player
   
     }
 
 
-    processLevelData(levelData) {
+    processLevelData() {
         this.groupWoodenObstacleSmall = this.physics.add.group({
             bounceX: 1,
             bounceY: 1,
@@ -108,24 +117,57 @@ class GameScene extends Phaser.Scene {
             immovable: true,
             collideWorldBounds: true
         });
+
+        this.groupWoodenObstacleLarge = this.physics.add.group({
+            immovable: true,
+            collideWorldBounds: true
+
+        });
+
+        this.groupStars = this.physics.add.group({});
+
+        this.groupBomb = this.physics.add.group({});
     
         // Create small wooden obstacles
-        levelData.woodenObstacleSmall.forEach(obstacle => {
-            let newObstacle = this.groupWoodenObstacleSmall.create(obstacle.x, obstacle.y, 'wooden_obstacle_small');
-            newObstacle.setDisplaySize(50, 50);
-            newObstacle.body.setAllowGravity(false);
-            newObstacle.setImmovable(true);
-            newObstacle.setVelocity(0, 60);
+        this.levelData.obstacles.forEach(obstacle => {
+            let newObstacle;
+            if (obstacle.type === 167) { // small wooden obstacle
+                newObstacle = this.groupWoodenObstacleSmall.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
+            }
+            else if (obstacle.type === 177) { // medium wooden obstacle
+                newObstacle = this.groupWoodenObstacleMedium.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
+            }
+            else if (obstacle.type === 187) { // large wooden obstacle
+                newObstacle = this.groupWoodenObstacleLarge.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
+            }
+            else if (obstacle.type === 267) { // star
+                newObstacle = this.groupStars.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
+                newObstacle.originalY = obstacle.posY; // Set the originalY
+                newObstacle.oscillationSpeed = Phaser.Math.FloatBetween(0.001, 0.008);
+                newObstacle.oscillationRange = Phaser.Math.FloatBetween(1, 20);
+                
+            }
+
+            else if (obstacle.type === 367) { // bomb
+                newObstacle = this.groupBomb.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
+                newObstacle.originalY = obstacle.posY; // Set the originalY
+                newObstacle.originalX = obstacle.posX; // Set the originalX
+                newObstacle.oscilationVertical = obstacle.oscilationVertical;
+                newObstacle.oscillationSpeed = obstacle.oscillationSpeed;
+                newObstacle.oscillationRange =obstacle.oscillationRange;
+                // newObstacle.setBounds(0, 0, this.worldWidth, this.worldHeight);
+            }
+            else{ // undefined type
+                return; // Acts like 'continue' in a forEach loop
+            }
+            // Common properties for all obstacles
+            newObstacle.setDisplaySize(obstacle.sizeX, obstacle.sizeY);
+            newObstacle.body.setAllowGravity(obstacle.gravity);
+            newObstacle.setImmovable(obstacle.imovable);
+            newObstacle.setVelocity(obstacle.velX, obstacle.velY);
+
         });
     
-        // Create medium wooden obstacles
-        levelData.woodenObstacleMedium.forEach(obstacle => {
-            let newObstacle = this.groupWoodenObstacleMedium.create(obstacle.x, obstacle.y, 'wooden_obstacle_medium');
-            newObstacle.setDisplaySize(125, 75);
-            newObstacle.body.setAllowGravity(false);
-            newObstacle.setVelocity(0, 0);
-    
-        });
     
     
     
@@ -134,18 +176,51 @@ class GameScene extends Phaser.Scene {
         // Add colliders
         this.physics.add.collider(this.player, this.groupWoodenObstacleSmall);
         this.physics.add.collider(this.player, this.groupWoodenObstacleMedium);
+        this.physics.add.collider(this.player, this.groupWoodenObstacleLarge);
+
+        //collect stars
+        this.physics.add.overlap(this.player, this.groupStars, this.collectStar, null, this);
         
     }
 
     // ********** ADITIONAL FUNCTIONS **********
 
+    finishSetup() {
+        this.finish = this.addScaledImage(this.levelData.finish.x, this.levelData.finish.y, 'finish', 80, 80);
+        this.finish.body.setAllowGravity(false);
+
+
+        this.physics.add.overlap(this.player, this.finish, () => {
+            this.bgMusic.stop();
+            this.scene.start('LevelCompleteScene');
+        }, null, this);
+    }
+
     boundsSetup() {
         // setup bounds for the intire game
-        this.worldWidth = this.game.config.width * this.levelData.widthOfLevelMultiplayer; 
-        this.worldHeight = this.game.config.height *this.levelData.heightOfLevelMultiplayer; 
+        // this.worldWidth = this.game.config.width * this.levelData.widthOfLevelMultiplayer; 
+        // this.worldHeight = this.game.config.height *this.levelData.heightOfLevelMultiplayer; 
+
+        this.worldWidth = this.levelData.worldWidth; 
+        this.worldHeight = this.levelData.worldHeight; 
 
         this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
 
+    }
+
+    checkBoundaryCollision() {
+        const bounds = this.physics.world.bounds;
+        if (this.player.x <= bounds.left || 
+            this.player.x >= bounds.right - this.player.displayWidth ||
+            this.player.y <= bounds.top ||
+            this.player.y >= bounds.bottom - this.player.displayHeight) {
+            this.triggerGameOver();
+        }
+    }
+    
+    triggerGameOver() {
+        this.bgMusic.stop();
+        this.scene.start('GameOverScene');
     }
 
     
@@ -160,58 +235,23 @@ class GameScene extends Phaser.Scene {
     }
 
     // TODO redoo stars
-    starSetup() {
-        //Musí byť sem, pretože pri GameOver sa to neresetne
+    starScoreSetup() {
         this.starCount = 0;
-
-        // star --------------------------------
-        this.star = this.addScaledImage(400, 250, 'star', 50, 50);
-        this.star.originalY = this.star.y; // Set the originalY
-        this.star.oscillationSpeed = Phaser.Math.FloatBetween(0.001, 0.008);
-        this.star.oscillationRange = Phaser.Math.FloatBetween(1, 20);
-
-
-        // this.star = this.addScaledImage(400, 250, 'star', 50, 50);
-        // this.star.oscillationSpeed = Phaser.Math.FloatBetween(0.001, 0.008);
-        // this.star.oscillationRange = Phaser.Math.FloatBetween(1, 30);
-        this.star.body.setAllowGravity(false);
-
-        // stars
-        this.stars = this.physics.add.group({
-            key: 'star',
-            repeat: 5,
-            setXY: { x: 50, y: 80, stepX: 70 }
-        });
-        this.stars.children.iterate(function (child) {
-            child.originalY = child.y;
-            child.oscillationSpeed = Phaser.Math.FloatBetween(0.001, 0.008);
-            child.oscillationRange = Phaser.Math.FloatBetween(1, 30);
-            child.body.setAllowGravity(false);
-        });
-
-        // collect stars
-        this.physics.add.overlap(this.player, this.star, this.collectStar, null, this);
-
-
-        this.physics.add.overlap(this.player, this.stars, this.collectStar, null, this);
         this.starScore = this.add.text(16, 16, 'Stars: 0', { fontSize: '32px', fill: '#000' });
         this.starScore.setScrollFactor(0);
-
-        // ----------------------- 
-
     }
 
     playerSetup(){
-        // player
-        // this.player = this.physics.add.image(50, 250, 'submarine').setOrigin(0, 0);
-        this.player = this.addScaledImage(50, 250, 'submarine', 80, 80);
+        this.player = this.addScaledImage(this.levelData.start.x, this.levelData.start.y, 'submarine', 80, 80);
         this.player.body.setAllowGravity(false);
         this.player.setCollideWorldBounds(true);
     }
 
-    seaMineSetup() {
-        this.seaMine = this.addScaledImage(400, 250, 'sea_mine', 50, 50);
-        this.seaMine.body.setAllowGravity(false);
+    createBorder() {
+        const borderThickness = 10; // Thickness of the border
+        const border = this.add.graphics();
+        border.lineStyle(borderThickness, 0xff0000, 1);
+        border.strokeRect(0, 0, this.worldWidth, this.worldHeight);
     }
     
     collectStar(player, star) {
@@ -265,16 +305,21 @@ class GameScene extends Phaser.Scene {
     
 
     oscillatorUpdate() {
-        
-        // oscillating stars
-        this.stars.children.iterate(function (child) {
-            child.y = child.originalY + Math.sin(this.time.now * child.oscillationSpeed) * child.oscillationRange;
-        }, this);
+        this.groupStars.getChildren().forEach(star => {
+            if (star.originalY !== undefined) {
+                star.y = star.originalY + Math.sin(this.time.now * star.oscillationSpeed) * star.oscillationRange;
+            }
+        });
 
-        // oscillating individual star
-        if (this.star.originalY !== undefined) {
-            this.star.y = this.star.originalY + Math.sin(this.time.now * this.star.oscillationSpeed) * this.star.oscillationRange;
-        }
+        this.groupBomb.getChildren().forEach(bomb => {
+            if (bomb.oscilationVertical === true) {
+                bomb.y = bomb.originalY + Math.sin(this.time.now * bomb.oscillationSpeed) * bomb.oscillationRange;
+            }
+            else if (bomb.oscilationVertical === false) {
+                bomb.x = bomb.originalX + Math.sin(this.time.now * bomb.oscillationSpeed) * bomb.oscillationRange;
+            }
+        });
+  
     }
 
     allSoundSetup() {
@@ -296,12 +341,12 @@ class GameScene extends Phaser.Scene {
         // Set up the camera
         this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
         this.cameras.main.setFollowOffset(-200, 0); // Adjust if needed
-        this.cameras.main.setBounds(0, 0, this.game.config.width * 10, this.game.config.height); // Adjust world bounds as needed
+        this.cameras.main.setBounds(0, 0, this.worldWidth, this.worldHeight); // Adjust world bounds as needed
     }
 
     bombExplosionSetup() {
          // bomb explosion
-         this.physics.add.overlap(this.player, this.seaMine, () => {
+         this.physics.add.overlap(this.player, this.groupBomb, () => {
             this.explosion.play();
             // Delay na ostatne riadky pri výbuchu
             this.time.delayedCall(500, () => {
