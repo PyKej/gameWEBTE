@@ -1,10 +1,10 @@
 import Phaser from 'phaser'
 
-import gameBg1 from '../assets/game_bcg1.png';
-import gameBg2 from '../assets/game_bcg2.png';
-import gameBg3 from '../assets/game_bcg3.png';
-import gameBg4 from '../assets/game_bcg4.png';
-import gameBg5 from '../assets/game_bcg5.png';
+import gameBg1 from '../assets/game_bg1.png';
+import gameBg2 from '../assets/game_bg2.png';
+import gameBg3 from '../assets/game_bg3.png';
+import gameBg4 from '../assets/game_bg4.png';
+import gameBg5 from '../assets/game_bg5.png';
 
 import submarine from '../assets/submarine.png';
 
@@ -17,16 +17,13 @@ import jellyfish from '../assets/jellyfish.png';
 
 import finish from '../assets/finish.png';
 
-
 import bgMusic from '../assets/bg_music.mp3';
 import starSoundEffect from '../assets/star_sound_effect.mp3';
 import explosionSound from '../assets/explosion.mp3';
 import jellyfishSoundEffect from '../assets/jellyfish_sound_effect.mp3';
 import finishSoundEffect from '../assets/finish_sound_effect.mp3';
 
-
 import data from '../json/data.json';
-
 
 class GameScene extends Phaser.Scene {
     constructor() {
@@ -38,24 +35,16 @@ class GameScene extends Phaser.Scene {
         this.stars;
         this.gameIsPaused = false;
 
-        // this.woodenObstacleSmall;
-        // this.woodenObstacleMedium;
-        // this.woodenObstacleLarge;
-
-
         // Music
         this.bgMusic;
         this.starSoundEffect;
 
         this.cursor;
 
-        // this.emitter;
-        
-        
-       
-
-        
-   
+        // Initialize variables
+        this.levelOrder = []; // Array to store the randomized level order
+        this.currentLevelIndex = 0; // Index to track the current level
+        this.levelData = null; // Variable to store the current level data
     }
 
     preload() {
@@ -89,7 +78,9 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
-        this.levelData = data.woodenLevel; // Load the level data
+
+        this.randomizeLevelOrder(); // Randomize level order at the start
+        this.loadLevelData(); // Load the first level's data
         this.boundsSetup(); // bounds
         this.addBackgroundImageSetup(); // background
         this.allSoundSetup(); // sound
@@ -110,7 +101,6 @@ class GameScene extends Phaser.Scene {
         this.checkBoundaryCollisionUpdate(); // New function to check boundary collision
         this.movePlayerUpdate(); // Move the player
     }
-
 
     processLevelData() {
         // Create groups for items
@@ -172,6 +162,7 @@ class GameScene extends Phaser.Scene {
             }
 
             else{ // undefined type
+                console.log("undefined type");
                 return; // Acts like 'continue' in a forEach loop
             }
             // Common properties for all obstacles
@@ -182,11 +173,6 @@ class GameScene extends Phaser.Scene {
 
         });
     
-    
-    
-    
-    
-    
         // Add colliders
         this.physics.add.collider(this.player, this.groupWoodenObstacleSmall);
         this.physics.add.collider(this.player, this.groupWoodenObstacleMedium);
@@ -194,10 +180,22 @@ class GameScene extends Phaser.Scene {
 
         //collect stars
         this.physics.add.overlap(this.player, this.groupStars, this.collectStar, null, this);
-        
     }
 
     // ********** ADITIONAL FUNCTIONS **********
+    randomizeLevelOrder() {
+        // Define your level keys
+        const levels = ['rageLevel', 'woodenLevel', 'scaryDungeonLevel'];
+        // Shuffle the array
+        this.levelOrder = Phaser.Utils.Array.Shuffle(levels);
+    }
+
+    loadLevelData() {
+        // Load the current level data from the shuffled array
+        const currentLevelKey = this.levelOrder[this.currentLevelIndex];
+        this.levelData = this.cache.json.get('data')[currentLevelKey];
+    }
+
     processLevelOscilation(newObstacle, obstacle) {
         newObstacle.originalY = obstacle.posY; // Set the originalY
         newObstacle.originalX = obstacle.posX; // Set the originalX
@@ -233,8 +231,23 @@ class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.finish, () => {
             this.bgMusic.stop();
             this.finishSoundEffect.play();
+            this.completeLevel();
             this.scene.start('LevelCompleteScene');
         }, null, this);
+    }
+
+    completeLevel() {
+        // Move to the next level
+        this.currentLevelIndex++;
+        if (this.currentLevelIndex >= this.levelOrder.length) {
+            this.currentLevelIndex = 0; // Loop back to the first level if all are complete
+        }
+
+        // Load the next level's data
+        this.loadLevelData();
+
+        // Restart or change the scene as needed
+        this.scene.restart();
     }
 
     boundsSetup() {
@@ -424,18 +437,6 @@ class GameScene extends Phaser.Scene {
             
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 
