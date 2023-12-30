@@ -22,6 +22,7 @@ import starSoundEffect from '../assets/star_sound_effect.mp3';
 import explosionSound from '../assets/explosion.mp3';
 import jellyfishSoundEffect from '../assets/jellyfish_sound_effect.mp3';
 import finishSoundEffect from '../assets/finish_sound_effect.mp3';
+import boundaryCollisioSoundEffect from '../assets/boundary_collisio_sound_effect.mp3';
 
 import data from '../json/data.json';
 
@@ -72,13 +73,13 @@ class GameScene extends Phaser.Scene {
         this.load.audio('explosion', explosionSound);
         this.load.audio('jellyfishSoundEffect', jellyfishSoundEffect);
         this.load.audio('finishSoundEffect', finishSoundEffect);
+        this.load.audio('boundaryCollisioSoundEffect', boundaryCollisioSoundEffect);
 
         // json
         this.load.json('data', data);
     }
 
     create() {
-
         this.randomizeLevelOrder(); // Randomize level order at the start
         this.loadLevelData(); // Load the first level's data
         this.boundsSetup(); // bounds
@@ -191,8 +192,12 @@ class GameScene extends Phaser.Scene {
     }
 
     loadLevelData() {
-        // Load the current level data from the shuffled array
-        const currentLevelKey = this.levelOrder[this.currentLevelIndex];
+        // Get the level order and current level index from the registry
+        const levelOrder = this.game.registry.get('levelOrder');
+        const currentLevelIndex = this.game.registry.get('currentLevelIndex');
+
+        // Load the current level data
+        const currentLevelKey = levelOrder[currentLevelIndex];
         this.levelData = this.cache.json.get('data')[currentLevelKey];
     }
 
@@ -243,6 +248,9 @@ class GameScene extends Phaser.Scene {
             this.currentLevelIndex = 0; // Loop back to the first level if all are complete
         }
 
+        // Update the current level index in the game's registry
+        this.game.registry.set('currentLevelIndex', this.currentLevelIndex);
+
         // Load the next level's data
         this.loadLevelData();
 
@@ -263,7 +271,8 @@ class GameScene extends Phaser.Scene {
             this.player.x >= bounds.right - this.player.displayWidth ||
             this.player.y <= bounds.top ||
             this.player.y >= bounds.bottom - this.player.displayHeight) {
-            this.triggerGameOver();
+                this.boundaryCollisioSoundEffect.play();
+                this.triggerGameOver();
         }
     }
     
@@ -357,10 +366,14 @@ class GameScene extends Phaser.Scene {
 
     allSoundSetup() {
         // music
+
+         // Check if the background music is already playing
+    if (!this.bgMusic || !this.bgMusic.isPlaying) {
         this.bgMusic = this.sound.add('bgMusic');
         this.bgMusic.play();
         this.bgMusic.loop = true;
         this.bgMusic.volume = 0.1;
+    }
 
         this.starSoundEffect = this.sound.add('starSoundEffect');
 
@@ -372,6 +385,9 @@ class GameScene extends Phaser.Scene {
 
         this.finishSoundEffect = this.sound.add('finishSoundEffect');
         this.finishSoundEffect.volume = 0.5;
+
+        this.boundaryCollisioSoundEffect = this.sound.add('boundaryCollisioSoundEffect');
+        this.boundaryCollisioSoundEffect.volume = 0.2;
     }
 
     cameraSetup() {

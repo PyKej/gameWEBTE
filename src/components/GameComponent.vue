@@ -34,6 +34,7 @@ import Game  from './Game';
 import GameOver from './GameOver';
 import Manual from './Manual';
 import LevelComplete from './LevelComplete';
+import Init from './Init';
 
 let game; // Declare the game variable in the outer scope
 
@@ -49,7 +50,7 @@ onMounted(() => {
         debug: true // TODO toto zmen pri final release na false
       }
     },
-    scene: [Game, Menu , Manual , GameOver, LevelComplete ], // TODO treba zmeniť poradie na [Menu, Manual, Game....] !! iba kvôli vytvaraniu hry
+    scene: [Init, Game, Menu , Manual , GameOver, LevelComplete ], // TODO treba zmeniť poradie na [Menu, Manual, Game....] !! iba kvôli vytvaraniu hry
     parent: 'game', 
     scale: {
       mode: Phaser.Scale.RESIZE, // Set the scale mode to RESIZE
