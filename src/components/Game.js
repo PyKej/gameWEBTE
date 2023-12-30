@@ -272,6 +272,7 @@ class GameScene extends Phaser.Scene {
         this.starCount += 1;
         this.starSoundEffect.play();
         this.starScore.setText('Stars: ' + this.starCount);
+        this.scene.get('LevelCompleteScene').data.set('starCount', this.starCount);
     }
 
     addScaledImage(x, y, imageKey, desiredWidth, desiredHeight) {

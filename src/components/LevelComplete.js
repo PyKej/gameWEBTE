@@ -55,10 +55,19 @@ class LevelCompleteScene extends Phaser.Scene {
         this.add.text(x, y, headerText, headerStyle).setOrigin(0.5, 0.5);
     }
 
-    addImages() {    
-        this.addImage(this.scale.width/2 - 40, this.scale.height * 0.49, 'starImg'); 
-        this.addImage(this.scale.width/2 - 120, this.scale.height * 0.45, 'starImg'); 
-        this.addImage(this.scale.width/2 + 40, this.scale.height * 0.45, 'starImg'); 
+    addImages() {
+        let starCount = this.data.get('starCount');
+        if(starCount === 3){
+            this.addImage(this.scale.width/2 - 40, this.scale.height * 0.49, 'starImg'); 
+            this.addImage(this.scale.width/2 - 120, this.scale.height * 0.45, 'starImg'); 
+            this.addImage(this.scale.width/2 + 40, this.scale.height * 0.45, 'starImg');
+        }else if(starCount === 2){
+            this.addImage(this.scale.width/2 - 120, this.scale.height * 0.45, 'starImg'); 
+            this.addImage(this.scale.width/2 + 40, this.scale.height * 0.45, 'starImg');
+              
+        }else{
+            this.addImage(this.scale.width/2 - 40, this.scale.height * 0.49, 'starImg'); 
+        } 
     }
     
     addImage(x, y, imageName) {
