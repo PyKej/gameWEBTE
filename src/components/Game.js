@@ -24,12 +24,12 @@ import data from '../json/data.json';
 class GameScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameScene' });
-
+        
         // Objects
         this.player;
         this.seaMine;
         this.stars;
-
+        this.gameIsPaused = false;
 
         // this.woodenObstacleSmall;
         // this.woodenObstacleMedium;
@@ -44,7 +44,7 @@ class GameScene extends Phaser.Scene {
 
         // this.emitter;
         
-
+        
        
 
         
@@ -74,7 +74,7 @@ class GameScene extends Phaser.Scene {
     create() {
         this.levelData = data.woodenLevel;
         // let levelData = data.bombLevel;
-
+       
 
         // Parameters
         this.playerSpeed = this.levelData.playerSpeed; // Parameter for player speed
@@ -96,8 +96,8 @@ class GameScene extends Phaser.Scene {
         this.bombExplosionSetup(); // bomb explosion
         this.jellyfishSetup(); // jellyfish
         this.createBorder(); // border
+        this.pauseGame();// pause the game
 
-     
         
 
     }
@@ -398,7 +398,39 @@ class GameScene extends Phaser.Scene {
 
         }, null, this);
     }
+    
+    pauseGame(){
+        let buttonBackground = this.add.graphics();
+        buttonBackground.fillStyle(0xffffff);  // Set the color to white
+        buttonBackground.fillRect(15, 50, 100, 50);  // Set the position and size of the button
+        buttonBackground.setScrollFactor(0);
 
+        let buttonText = this.add.text(65, 75, 'Pause', { color: '#1ac6ff', align: 'center', fontSize: '24px' });
+        buttonText.setOrigin(0.5, 0.5);  // Set the origin to the center of the text
+        buttonText.setScrollFactor(0);
+
+        buttonBackground.setInteractive(new Phaser.Geom.Rectangle(15, 50, 100, 50), Phaser.Geom.Rectangle.Contains);
+        buttonBackground.on('pointerup', () => {
+                if (!this.gameIsPaused) {
+                    this.game.loop.sleep();
+                    this.gameIsPaused = true;
+                    
+                } else {
+                    this.gameIsPaused = false;
+                    this.game.loop.wake();
+                }
+            });
+        
+                
+        this.input.keyboard.on('keydown-ESC', () => {
+            if (this.gameIsPaused) {
+                    this.game.loop.wake();
+                    this.gameIsPaused = false;
+                }
+            });
+            
+
+    }
 
 
 
