@@ -16,6 +16,7 @@ class GameOverScene extends Phaser.Scene {
     }
 
     create() {
+        this.scene.start('GameScene'); //TODO Delete this line GODMODE
         // Create objects here
         // Constanty ktore su properties sceny
         this.rectWidth = this.scale.width * 0.35; // 25% of the game width

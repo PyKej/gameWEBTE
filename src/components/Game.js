@@ -9,6 +9,7 @@ import star from '../assets/star.png';
 import woodenObstacleSmall from '../assets/wooden_obstacle_small.png';
 import woodenObstacleMedium from '../assets/wooden_obstacle_medium.png';
 import woodenObstacleLarge from '../assets/wooden_obstacle_large.png';
+import jellyfish from '../assets/jellyfish.png';
 
 import finish from '../assets/finish.png';
 
@@ -60,6 +61,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('wooden_obstacle_medium', woodenObstacleMedium);
         this.load.image('wooden_obstacle_large', woodenObstacleLarge);
         this.load.image('finish', finish);
+        this.load.image('jellyfish', jellyfish);
 
         this.load.audio('bgMusic', bgMusic);
         this.load.audio('starSoundEffect', starSoundEffect);
@@ -92,6 +94,7 @@ class GameScene extends Phaser.Scene {
 
         this.processLevelData();
         this.bombExplosionSetup(); // bomb explosion
+        this.jellyfishSetup(); // jellyfish
         this.createBorder(); // border
 
      
@@ -127,6 +130,8 @@ class GameScene extends Phaser.Scene {
         this.groupStars = this.physics.add.group({});
 
         this.groupBomb = this.physics.add.group({});
+
+        this.groupJellyfish = this.physics.add.group({});
     
         // Create small wooden obstacles
         this.levelData.obstacles.forEach(obstacle => {
@@ -147,16 +152,16 @@ class GameScene extends Phaser.Scene {
                 newObstacle.oscillationRange = Phaser.Math.FloatBetween(1, 20);
                 
             }
-
             else if (obstacle.type === 367) { // bomb
                 newObstacle = this.groupBomb.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
-                newObstacle.originalY = obstacle.posY; // Set the originalY
-                newObstacle.originalX = obstacle.posX; // Set the originalX
-                newObstacle.oscilationVertical = obstacle.oscilationVertical;
-                newObstacle.oscillationSpeed = obstacle.oscillationSpeed;
-                newObstacle.oscillationRange =obstacle.oscillationRange;
+                this.processLevelFloating(newObstacle, obstacle);
                 // newObstacle.setBounds(0, 0, this.worldWidth, this.worldHeight);
             }
+            else if (obstacle.type === 467) { // jellyfish
+                newObstacle = this.groupJellyfish.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
+                this.processLevelFloating(newObstacle, obstacle);
+            }
+
             else{ // undefined type
                 return; // Acts like 'continue' in a forEach loop
             }
@@ -184,6 +189,13 @@ class GameScene extends Phaser.Scene {
     }
 
     // ********** ADITIONAL FUNCTIONS **********
+    processLevelFloating(newObstacle, obstacle) {
+        newObstacle.originalY = obstacle.posY; // Set the originalY
+        newObstacle.originalX = obstacle.posX; // Set the originalX
+        newObstacle.oscilationVertical = obstacle.oscilationVertical;
+        newObstacle.oscillationSpeed = obstacle.oscillationSpeed;
+        newObstacle.oscillationRange =obstacle.oscillationRange;
+    }
 
     finishSetup() {
         this.finish = this.addScaledImage(this.levelData.finish.x, this.levelData.finish.y, 'finish', 80, 80);
@@ -279,27 +291,35 @@ class GameScene extends Phaser.Scene {
     movePlayerUpdate() {
         // for up down left right keys
         const { left, right, up, down } = this.cursor;
-    
-        // Reset player velocity
-        this.player.setVelocity(0);
-    
-        // Horizontal movement
-        if (left.isDown) {
-            this.player.setVelocityX(-this.playerSpeed);
-        } else if (right.isDown) {
-            this.player.setVelocityX(this.playerSpeed);
+        
+
+        if(this.jellyfishStink === false){ // if jellyfish stink is not true
+
+             // Reset player velocity
+            this.player.setVelocity(0);
+            
+            
+            // Horizontal movement
+            if (left.isDown) {
+                this.player.setVelocityX(-this.playerSpeed);
+            } else if (right.isDown) {
+                this.player.setVelocityX(this.playerSpeed);
+            }
+        
+            // Vertical movement
+            if (up.isDown) {
+                this.player.setVelocityY(-this.playerSpeed);
+            } else if (down.isDown) {
+                this.player.setVelocityY(this.playerSpeed);
+            }
+        
+            // Automatic downward movement when no keys are pressed
+            if (!left.isDown && !right.isDown && !up.isDown && !down.isDown) {
+                this.player.setVelocityY(50); // Adjust this value as needed
+            }
         }
-    
-        // Vertical movement
-        if (up.isDown) {
-            this.player.setVelocityY(-this.playerSpeed);
-        } else if (down.isDown) {
-            this.player.setVelocityY(this.playerSpeed);
-        }
-    
-        // Automatic downward movement when no keys are pressed
-        if (!left.isDown && !right.isDown && !up.isDown && !down.isDown) {
-            this.player.setVelocityY(50); // Adjust this value as needed
+        else{ // if jellyfish stink is true
+            this.player.setVelocityY(90);
         }
     }
     
@@ -318,6 +338,16 @@ class GameScene extends Phaser.Scene {
             else if (bomb.oscilationVertical === false) {
                 bomb.x = bomb.originalX + Math.sin(this.time.now * bomb.oscillationSpeed) * bomb.oscillationRange;
             }
+        });
+
+        this.groupJellyfish.getChildren().forEach(jellyfish => {
+            if (jellyfish.oscilationVertical === true) {
+                jellyfish.y = jellyfish.originalY + Math.sin(this.time.now * jellyfish.oscillationSpeed) * jellyfish.oscillationRange;
+            }
+            else if (jellyfish.oscilationVertical === false) {
+                jellyfish.x = jellyfish.originalX + Math.sin(this.time.now * jellyfish.oscillationSpeed) * jellyfish.oscillationRange;
+            }
+
         });
   
     }
@@ -349,10 +379,22 @@ class GameScene extends Phaser.Scene {
          this.physics.add.overlap(this.player, this.groupBomb, () => {
             this.explosion.play();
             // Delay na ostatne riadky pri výbuchu
-            this.time.delayedCall(500, () => {
-                this.bgMusic.stop();
-                this.scene.start('GameOverScene');
+            this.bgMusic.stop();
+            this.scene.start('GameOverScene');
+
+        }, null, this);
+    }
+
+    jellyfishSetup() {
+        // jellyfish
+        this.jellyfishStink = false;
+        this.physics.add.overlap(this.player, this.groupJellyfish, () => {
+
+            this.jellyfishStink = true;
+            this.time.delayedCall(3000, () => {
+                this.jellyfishStink = false;
             });
+
 
         }, null, this);
     }
