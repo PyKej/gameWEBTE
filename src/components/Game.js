@@ -1,6 +1,10 @@
 import Phaser from 'phaser'
 
-import gameBg from '../assets/game_bcg2.png';
+import gameBg1 from '../assets/game_bcg1.png';
+import gameBg2 from '../assets/game_bcg2.png';
+import gameBg3 from '../assets/game_bcg3.png';
+import gameBg4 from '../assets/game_bcg4.png';
+import gameBg5 from '../assets/game_bcg5.png';
 
 import submarine from '../assets/submarine.png';
 
@@ -17,6 +21,9 @@ import finish from '../assets/finish.png';
 import bgMusic from '../assets/bg_music.mp3';
 import starSoundEffect from '../assets/star_sound_effect.mp3';
 import explosionSound from '../assets/explosion.mp3';
+import jellyfishSoundEffect from '../assets/jellyfish_sound_effect.mp3';
+import finishSoundEffect from '../assets/finish_sound_effect.mp3';
+
 
 import data from '../json/data.json';
 
@@ -52,7 +59,14 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('gameBg', gameBg);
+        // background
+        this.load.image('gameBg1', gameBg1);
+        this.load.image('gameBg2', gameBg2);
+        this.load.image('gameBg3', gameBg3);
+        this.load.image('gameBg4', gameBg4);
+        this.load.image('gameBg5', gameBg5);
+
+        // objects
         this.load.image('submarine', submarine);
         this.load.image('sea_mine', seaMine);
         this.load.image('star', star);
@@ -63,54 +77,43 @@ class GameScene extends Phaser.Scene {
         this.load.image('finish', finish);
         this.load.image('jellyfish', jellyfish);
 
+        // sound
         this.load.audio('bgMusic', bgMusic);
         this.load.audio('starSoundEffect', starSoundEffect);
         this.load.audio('explosion', explosionSound);
+        this.load.audio('jellyfishSoundEffect', jellyfishSoundEffect);
+        this.load.audio('finishSoundEffect', finishSoundEffect);
 
+        // json
         this.load.json('data', data);
-
     }
 
     create() {
-        this.levelData = data.woodenLevel;
-        // let levelData = data.bombLevel;
-       
-
-        // Parameters
-        this.playerSpeed = this.levelData.playerSpeed; // Parameter for player speed
-        // this.widthOfLevelMultiplayer = 1.8; // Multiplayer for width of level calculated for worldWidth
-        // this.heightOfLevelMultiplayer = 1; // Multiplayer for height of level calculated for worldHeight
-
-
+        this.levelData = data.woodenLevel; // Load the level data
         this.boundsSetup(); // bounds
         this.addBackgroundImageSetup(); // background
         this.allSoundSetup(); // sound
         this.cursor = this.input.keyboard.createCursorKeys(); // keyboard tracking
         this.playerSetup(); // player
-        // this.seaMineSetup(); // sea mine
         this.cameraSetup();  // Setup the camera
         this.starScoreSetup(); // stars
         this.finishSetup(); // finish
-
         this.processLevelData();
         this.bombExplosionSetup(); // bomb explosion
         this.jellyfishSetup(); // jellyfish
-        this.createBorder(); // border
-        this.pauseGame();// pause the game
-
-        
-
+        this.createBorderSetup(); // border
+        this.pauseGameSetup();// pause the game
     }
     
     update() {
         this.oscillatorUpdate(); // Oscillator update
-        this.checkBoundaryCollision(); // New function to check boundary collision
+        this.checkBoundaryCollisionUpdate(); // New function to check boundary collision
         this.movePlayerUpdate(); // Move the player
-  
     }
 
 
     processLevelData() {
+        // Create groups for items
         this.groupWoodenObstacleSmall = this.physics.add.group({
             bounceX: 1,
             bounceY: 1,
@@ -120,46 +123,52 @@ class GameScene extends Phaser.Scene {
             immovable: true,
             collideWorldBounds: true
         });
-
         this.groupWoodenObstacleLarge = this.physics.add.group({
             immovable: true,
             collideWorldBounds: true
 
         });
-
         this.groupStars = this.physics.add.group({});
-
         this.groupBomb = this.physics.add.group({});
-
         this.groupJellyfish = this.physics.add.group({});
     
-        // Create small wooden obstacles
+        // create obstacles with data from json
         this.levelData.obstacles.forEach(obstacle => {
             let newObstacle;
-            if (obstacle.type === 167) { // small wooden obstacle
+            if (obstacle.type === 167) { // small wooden obstacle motion via bouncing
                 newObstacle = this.groupWoodenObstacleSmall.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
             }
-            else if (obstacle.type === 177) { // medium wooden obstacle
+            else if (obstacle.type === 177) { // medium wooden obstacle motion via bouncing
                 newObstacle = this.groupWoodenObstacleMedium.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
             }
-            else if (obstacle.type === 187) { // large wooden obstacle
+            else if (obstacle.type === 187) { // large wooden obstacle motion via bouncing
                 newObstacle = this.groupWoodenObstacleLarge.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
             }
-            else if (obstacle.type === 267) { // star
+            else if (obstacle.type === 169) { // small wooden obstacle motion via oscillation
+                newObstacle = this.groupWoodenObstacleSmall.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
+                this.processLevelOscilation(newObstacle, obstacle);
+            }
+            else if (obstacle.type === 179) { // medium wooden obstacle motion via oscillation
+                newObstacle = this.groupWoodenObstacleMedium.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
+                this.processLevelOscilation(newObstacle, obstacle);
+            }
+            else if (obstacle.type === 189) { // large wooden obstacle motion via oscillation
+                newObstacle = this.groupWoodenObstacleLarge.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
+                this.processLevelOscilation(newObstacle, obstacle);
+            }
+            else if (obstacle.type === 269) { // star motion via oscillation
                 newObstacle = this.groupStars.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
-                newObstacle.originalY = obstacle.posY; // Set the originalY
-                newObstacle.oscillationSpeed = Phaser.Math.FloatBetween(0.001, 0.008);
-                newObstacle.oscillationRange = Phaser.Math.FloatBetween(1, 20);
+                this.processLevelOscilation(newObstacle, obstacle);
                 
             }
-            else if (obstacle.type === 367) { // bomb
+            else if (obstacle.type === 369) { // bomb motion via oscillation
                 newObstacle = this.groupBomb.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
-                this.processLevelFloating(newObstacle, obstacle);
+                this.processLevelOscilation(newObstacle, obstacle);
                 // newObstacle.setBounds(0, 0, this.worldWidth, this.worldHeight);
             }
-            else if (obstacle.type === 467) { // jellyfish
+            else if (obstacle.type === 469) { // jellyfish motion via oscillation
                 newObstacle = this.groupJellyfish.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
-                this.processLevelFloating(newObstacle, obstacle);
+                this.processLevelOscilation(newObstacle, obstacle);
             }
 
             else{ // undefined type
@@ -189,7 +198,7 @@ class GameScene extends Phaser.Scene {
     }
 
     // ********** ADITIONAL FUNCTIONS **********
-    processLevelFloating(newObstacle, obstacle) {
+    processLevelOscilation(newObstacle, obstacle) {
         newObstacle.originalY = obstacle.posY; // Set the originalY
         newObstacle.originalX = obstacle.posX; // Set the originalX
         newObstacle.oscilationVertical = obstacle.oscilationVertical;
@@ -197,30 +206,45 @@ class GameScene extends Phaser.Scene {
         newObstacle.oscillationRange =obstacle.oscillationRange;
     }
 
+    oscillatorUpdate() {
+        this.applyOscillation(this.groupStars);
+        this.applyOscillation(this.groupBomb);
+        this.applyOscillation(this.groupJellyfish);
+        this.applyOscillation(this.groupWoodenObstacleSmall);
+        this.applyOscillation(this.groupWoodenObstacleMedium);
+        this.applyOscillation(this.groupWoodenObstacleLarge);
+    }
+    
+    applyOscillation(group) {
+        group.getChildren().forEach(item => {
+            if (item.oscilationVertical === true && item.originalY !== undefined) {
+                item.y = item.originalY + Math.sin(this.time.now * item.oscillationSpeed) * item.oscillationRange;
+            } else if (item.oscilationVertical === false && item.originalX !== undefined) {
+                item.x = item.originalX + Math.sin(this.time.now * item.oscillationSpeed) * item.oscillationRange;
+            }
+        });
+    }
+
+
     finishSetup() {
         this.finish = this.addScaledImage(this.levelData.finish.x, this.levelData.finish.y, 'finish', 80, 80);
         this.finish.body.setAllowGravity(false);
 
-
         this.physics.add.overlap(this.player, this.finish, () => {
             this.bgMusic.stop();
+            this.finishSoundEffect.play();
             this.scene.start('LevelCompleteScene');
         }, null, this);
     }
 
     boundsSetup() {
-        // setup bounds for the intire game
-        // this.worldWidth = this.game.config.width * this.levelData.widthOfLevelMultiplayer; 
-        // this.worldHeight = this.game.config.height *this.levelData.heightOfLevelMultiplayer; 
-
         this.worldWidth = this.levelData.worldWidth; 
         this.worldHeight = this.levelData.worldHeight; 
 
         this.physics.world.setBounds(0, 0, this.worldWidth, this.worldHeight);
-
     }
 
-    checkBoundaryCollision() {
+    checkBoundaryCollisionUpdate() {
         const bounds = this.physics.world.bounds;
         if (this.player.x <= bounds.left || 
             this.player.x >= bounds.right - this.player.displayWidth ||
@@ -234,11 +258,10 @@ class GameScene extends Phaser.Scene {
         this.bgMusic.stop();
         this.scene.start('GameOverScene');
     }
-
     
     addBackgroundImageSetup() {
         // background image
-        this.menuImage = this.add.image(0, 0, 'gameBg');
+        this.menuImage = this.add.image(0, 0, this.levelData.backgroundImageKey);
         var scaleX = this.cameras.main.width / this.menuImage.width;
         var scaleY = this.cameras.main.height / this.menuImage.height;
         var scale = Math.max(scaleX, scaleY);
@@ -246,7 +269,6 @@ class GameScene extends Phaser.Scene {
         this.menuImage.setScrollFactor(0);
     }
 
-    // TODO redoo stars
     starScoreSetup() {
         this.starCount = 0;
         this.starScore = this.add.text(16, 16, 'Stars: 0', { fontSize: '32px', fill: '#000' });
@@ -254,12 +276,13 @@ class GameScene extends Phaser.Scene {
     }
 
     playerSetup(){
+        this.playerSpeed = this.levelData.playerSpeed; // Parameter for player speed
         this.player = this.addScaledImage(this.levelData.start.x, this.levelData.start.y, 'submarine', 80, 80);
         this.player.body.setAllowGravity(false);
         this.player.setCollideWorldBounds(true);
     }
 
-    createBorder() {
+    createBorderSetup() {
         const borderThickness = 10; // Thickness of the border
         const border = this.add.graphics();
         border.lineStyle(borderThickness, 0xff0000, 1);
@@ -275,29 +298,24 @@ class GameScene extends Phaser.Scene {
     }
 
     addScaledImage(x, y, imageKey, desiredWidth, desiredHeight) {
-        // Create a physics image instead of a standard image
-        let img = this.physics.add.image(x, y, imageKey);
+        let img = this.physics.add.image(x, y, imageKey); // Create a physics image instead of a standard image
     
         // Calculate scale factors to reach the desired width and height
         var scaleX = desiredWidth / img.width;
         var scaleY = desiredHeight / img.height;
     
-        // Set the scale and origin of the image
-        img.setScale(scaleX, scaleY).setOrigin(0, 0);
-    
+        img.setScale(scaleX, scaleY).setOrigin(0, 0);// Set the scale and origin of the image
         return img;
     }
 
     movePlayerUpdate() {
         // for up down left right keys
         const { left, right, up, down } = this.cursor;
-        
 
         if(this.jellyfishStink === false){ // if jellyfish stink is not true
 
              // Reset player velocity
             this.player.setVelocity(0);
-            
             
             // Horizontal movement
             if (left.isDown) {
@@ -322,49 +340,24 @@ class GameScene extends Phaser.Scene {
             this.player.setVelocityY(90);
         }
     }
-    
-
-    oscillatorUpdate() {
-        this.groupStars.getChildren().forEach(star => {
-            if (star.originalY !== undefined) {
-                star.y = star.originalY + Math.sin(this.time.now * star.oscillationSpeed) * star.oscillationRange;
-            }
-        });
-
-        this.groupBomb.getChildren().forEach(bomb => {
-            if (bomb.oscilationVertical === true) {
-                bomb.y = bomb.originalY + Math.sin(this.time.now * bomb.oscillationSpeed) * bomb.oscillationRange;
-            }
-            else if (bomb.oscilationVertical === false) {
-                bomb.x = bomb.originalX + Math.sin(this.time.now * bomb.oscillationSpeed) * bomb.oscillationRange;
-            }
-        });
-
-        this.groupJellyfish.getChildren().forEach(jellyfish => {
-            if (jellyfish.oscilationVertical === true) {
-                jellyfish.y = jellyfish.originalY + Math.sin(this.time.now * jellyfish.oscillationSpeed) * jellyfish.oscillationRange;
-            }
-            else if (jellyfish.oscilationVertical === false) {
-                jellyfish.x = jellyfish.originalX + Math.sin(this.time.now * jellyfish.oscillationSpeed) * jellyfish.oscillationRange;
-            }
-
-        });
-  
-    }
 
     allSoundSetup() {
         // music
         this.bgMusic = this.sound.add('bgMusic');
         this.bgMusic.play();
         this.bgMusic.loop = true;
-        this.bgMusic.volume = 0.2;
+        this.bgMusic.volume = 0.1;
 
         this.starSoundEffect = this.sound.add('starSoundEffect');
 
         this.explosion = this.sound.add('explosion');
         this.explosion.volume = 0.4;
 
-        
+        this.jellyfishSoundEffect = this.sound.add('jellyfishSoundEffect');
+        this.jellyfishSoundEffect.volume = 1.5;
+
+        this.finishSoundEffect = this.sound.add('finishSoundEffect');
+        this.finishSoundEffect.volume = 0.5;
     }
 
     cameraSetup() {
@@ -389,17 +382,16 @@ class GameScene extends Phaser.Scene {
         // jellyfish
         this.jellyfishStink = false;
         this.physics.add.overlap(this.player, this.groupJellyfish, () => {
-
+            this.jellyfishSoundEffect.play();
             this.jellyfishStink = true;
-            this.time.delayedCall(3000, () => {
+            this.time.delayedCall(this.levelData.stinkDuration, () => {
                 this.jellyfishStink = false;
             });
-
 
         }, null, this);
     }
     
-    pauseGame(){
+    pauseGameSetup(){
         let buttonBackground = this.add.graphics();
         buttonBackground.fillStyle(0xffffff);  // Set the color to white
         buttonBackground.fillRect(15, 50, 100, 50);  // Set the position and size of the button
