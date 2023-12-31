@@ -12,12 +12,14 @@
     </p>
     <h2>Controls</h2>
     <p id="keys">Use arrow keys or gyroscope when you are using your mobile device to move with the submarine</p>
-    <img id ="imageKeys" src="../assets/arrow_keys5.png" alt="arrowKeys" width="130" height="130">
-    <p id="stars">You have to collect as many stars as you can during your adventure</p>
-    <img id ="imageStars" src="../assets/star.png" alt="Star" width="120" height="120">
-    <p id="mines">You have to avoid the scary sea mines, because they will destroy your submarine</p>
-    <img id ="imageMines" src="../assets/sea_mine.png" alt="Sea Mine" width="130" height="130">
-    <img id ="imageSubmarine" src="../assets/submarine.png" alt="Submarine" width="130" height="130">
+    <img id ="imageKeys" src="../assets/arrow_keys5.png" alt="arrowKeys" width="85" height="85">
+    <p id="stars">You have to collect as many stars as you can during your adventure. Every level ends with finish !</p>
+    <img id ="imageStars" src="../assets/star.png" alt="Star" width="80" height="80">
+    <img id="finish" src="../assets/finish.png" alt="Finish" width="85" height="85">
+    <p id="mines">You have to avoid the scary sea mines, because they will destroy your submarine. Avoid jellyfish because they stun the submarine.</p>
+    <img id ="imageMines" src="../assets/sea_mine.png" alt="Sea Mine" width="85" height="85">
+    <img id="jellyFish" src="../assets/jellyfish.png" alt="Jellyfish" width="85" height="85">
+    <img id ="imageSubmarine" src="../assets/submarine.png" alt="Submarine" width="85" height="85">
     <p id="credits">This game was created by Patrik Pitka Kester and Samuel Kubala</p>
   </div>
 
@@ -50,7 +52,7 @@ onMounted(() => {
         debug: true // TODO toto zmen pri final release na false
       }
     },
-    scene: [Init, Game, Menu , Manual , GameOver, LevelComplete ], // TODO treba zmeniť poradie na [Menu, Manual, Game....] !! iba kvôli vytvaraniu hry
+    scene: [ Init, Game, Menu, Manual, GameOver, LevelComplete ], // TODO treba zmeniť poradie na [Menu, Manual, Game....] !! iba kvôli vytvaraniu hry
     parent: 'game', 
     scale: {
       mode: Phaser.Scale.RESIZE, // Set the scale mode to RESIZE
@@ -136,23 +138,38 @@ window.onafterprint = function() {
     #imageKeys{
       position: absolute;
       top: 48%;
-      left: calc(100% - 2em - 65px);
+      left: calc(100% - 2em - 85px);
       transform: translate(-50%, -50%);
     }
 
     #imageStars{
       position: absolute;
       top: 60%;
-      left: calc(100% - 2em - 60px);
+      left: 79%;
+      transform: translate(-50%, -50%);
+    }
+
+    #finish{
+      position: absolute;
+      top: 60%;
+      left: 93%;
       transform: translate(-50%, -50%);
     }
 
     #imageMines{
       position: absolute;
       top: 74%;
-      left: calc(100% - 2em - 65px);
+      left: 79%;
       transform: translate(-50%, -50%);
     }
+
+    #jellyFish{
+      position: absolute;
+      top: 74%;
+      left: 93%;
+      transform: translate(-50%, -50%);
+    }
+
 
     #imageSubmarine{
       position: absolute;

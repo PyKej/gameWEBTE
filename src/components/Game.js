@@ -14,7 +14,7 @@ import woodenObstacleSmall from '../assets/wooden_obstacle_small.png';
 import woodenObstacleMedium from '../assets/wooden_obstacle_medium.png';
 import woodenObstacleLarge from '../assets/wooden_obstacle_large.png';
 import jellyfish from '../assets/jellyfish.png';
-
+import stopImage from '../assets/Stop.png';
 import finish from '../assets/finish.png';
 
 import bgMusic from '../assets/bg_music.mp3';
@@ -66,7 +66,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('wooden_obstacle_large', woodenObstacleLarge);
         this.load.image('finish', finish);
         this.load.image('jellyfish', jellyfish);
-
+        this.load.image('stop', stopImage);
         // sound
         this.load.audio('bgMusic', bgMusic);
         this.load.audio('starSoundEffect', starSoundEffect);
@@ -426,16 +426,17 @@ class GameScene extends Phaser.Scene {
     }
     
     pauseGameSetup(){
-        let buttonBackground = this.add.graphics();
-        buttonBackground.fillStyle(0xffffff);  // Set the color to white
-        buttonBackground.fillRect(15, 50, 100, 50);  // Set the position and size of the button
+        let buttonBackground = this.add.image(30,70,'stop');
+        buttonBackground.setScale(0.5);
+       // buttonBackground.fillStyle(0xffffff);  // Set the color to white
+       // buttonBackground.fillRect(15, 50, 100, 50);  // Set the position and size of the button
         buttonBackground.setScrollFactor(0);
 
-        let buttonText = this.add.text(65, 75, 'Pause', { color: '#1ac6ff', align: 'center', fontSize: '24px' });
+        /* let buttonText = this.add.text(65, 75, 'Pause', { color: '#1ac6ff', align: 'center', fontSize: '24px' });
         buttonText.setOrigin(0.5, 0.5);  // Set the origin to the center of the text
-        buttonText.setScrollFactor(0);
+        buttonText.setScrollFactor(0); */
 
-        buttonBackground.setInteractive(new Phaser.Geom.Rectangle(15, 50, 100, 50), Phaser.Geom.Rectangle.Contains);
+        buttonBackground.setInteractive(new Phaser.Geom.Rectangle(0, 0, 100, 80), Phaser.Geom.Rectangle.Contains);
         buttonBackground.on('pointerup', () => {
                 if (!this.gameIsPaused) {
                     this.game.loop.sleep();

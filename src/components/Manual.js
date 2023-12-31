@@ -4,6 +4,8 @@ import keys from '../assets/arrow_keys5.png';
 import star from '../assets/star.png';
 import submarine from '../assets/submarine.png';
 import mine from '../assets/sea_mine.png';
+import jellyfish from '../assets/jellyfish.png';
+import finish from '../assets/finish.png';
 
 class ManualScene extends Phaser.Scene {
     constructor() {
@@ -21,6 +23,8 @@ class ManualScene extends Phaser.Scene {
         this.load.image('starImg', star);
         this.load.image('submarineImg' , submarine);
         this.load.image('seaMine', mine);
+        this.load.image('finish' , finish);
+        this.load.image('jelly' , jellyfish);
     }
 
     create() {
@@ -52,7 +56,7 @@ class ManualScene extends Phaser.Scene {
         //Pridaný text 
         this.addTextField(this.scale.width / 2, this.rectY - this.scale.height * 0.23, 'Use arrow keys to'); 
         this.addTextField(this.scale.width / 2, this.rectY - this.scale.height * 0.18, 'move with the submarine!'); 
-        this.addTextField(this.scale.width / 2, this.rectY - this.scale.height * 0.017, 'Collect as many stars!'); 
+        this.addTextField(this.scale.width / 2, this.rectY - this.scale.height * 0.017, 'Finish level with many stars!'); 
         this.addTextField(this.scale.width / 2, this.rectY + this.scale.height * 0.157, 'Avoid bad obstacles!'); 
     
         //Pridané obrázky
@@ -76,10 +80,12 @@ class ManualScene extends Phaser.Scene {
         var imgWidth = 80;
     
         this.addImage(this.scale.width/2 - 40 , this.scale.height * 0.3367, 'arrKeys'); 
-        this.addStarImage(this.scale.width/2 - 35, this.scale.height * 0.51, 'starImg'); 
+        this.addStarImage(this.scale.width/2 - 70, this.scale.height * 0.51, 'starImg');
+        this.addImage(this.scale.width/2 + 15 , this.scale.height * 0.51, 'finish'); 
         this.addImage(0, 0, 'submarineImg'); 
         this.addImage(this.scale.width - imgWidth, 0 , 'submarineImg'); 
-        this.addImage(this.scale.width/2 - 40, this.scale.height * 0.6867, 'seaMine'); 
+        this.addImage(this.scale.width/2 - 80, this.scale.height * 0.6867, 'seaMine');
+        this.addImage(this.scale.width/2 + 15, this.scale.height * 0.6867, 'jelly'); 
     }
     
 
