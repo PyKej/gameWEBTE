@@ -111,6 +111,8 @@ class GameScene extends Phaser.Scene {
             collideWorldBounds: true
         });
         this.groupWoodenObstacleMedium = this.physics.add.group({
+            bounceX: 1,
+            bounceY: 1,
             immovable: true,
             collideWorldBounds: true
         });
@@ -120,8 +122,14 @@ class GameScene extends Phaser.Scene {
 
         });
         this.groupStars = this.physics.add.group({});
-        this.groupBomb = this.physics.add.group({});
-        this.groupJellyfish = this.physics.add.group({});
+        this.groupBomb = this.physics.add.group({
+            bounceX: 1,
+            bounceY: 1,
+            collideWorldBounds: true
+        });
+        this.groupJellyfish = this.physics.add.group({
+            collideWorldBounds: true
+        });
     
         // create obstacles with data from json
         this.levelData.obstacles.forEach(obstacle => {
@@ -156,6 +164,9 @@ class GameScene extends Phaser.Scene {
                 newObstacle = this.groupBomb.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
                 this.processLevelOscilation(newObstacle, obstacle);
                 // newObstacle.setBounds(0, 0, this.worldWidth, this.worldHeight);
+            }
+            else if (obstacle.type === 367) { // bomb motion via bouncing
+                newObstacle = this.groupBomb.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
             }
             else if (obstacle.type === 469) { // jellyfish motion via oscillation
                 newObstacle = this.groupJellyfish.create(obstacle.posX, obstacle.posY, obstacle.imageKey);
@@ -228,7 +239,6 @@ class GameScene extends Phaser.Scene {
         });
     }
 
-
     finishSetup() {
         this.finish = this.addScaledImage(this.levelData.finish.x, this.levelData.finish.y, 'finish', 80, 80);
         this.finish.body.setAllowGravity(false);
@@ -247,14 +257,8 @@ class GameScene extends Phaser.Scene {
         if (this.currentLevelIndex >= this.levelOrder.length) {
             this.currentLevelIndex = 0; // Loop back to the first level if all are complete
         }
-
-        // Update the current level index in the game's registry
-        this.game.registry.set('currentLevelIndex', this.currentLevelIndex);
-
-        // Load the next level's data
+        this.game.registry.set('currentLevelIndex', this.currentLevelIndex); // Update the current level index in the game's registry
         this.loadLevelData();
-
-        // Restart or change the scene as needed
         this.scene.restart();
     }
 
