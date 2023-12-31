@@ -5,7 +5,7 @@ class InitScene extends Phaser.Scene {
 
     create() {
         // Randomize level order
-        const levels = ['rageLevel', 'woodenLevel', 'scaryDungeonLevel', 'tubeLevel'];
+        const levels = ['seaLevel','rageLevel', 'woodenLevel', 'scaryDungeonLevel', 'tubeLevel'];  
         // const levels = ['tubeLevel']; // TODO tuna musia byť všetky levely
         const shuffledLevels = Phaser.Utils.Array.Shuffle(levels);
 

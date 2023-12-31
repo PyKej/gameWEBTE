@@ -258,7 +258,7 @@
     "scaryDungeonLevel": {
         "levelName": "Scary Dungeon úroveň",
         "backgroundImageKey": "gameBg4",
-        "start": {"x": 220, "y": 610},
+        "start": {"x": 50, "y": 10},
         "finish": {"x": 1800, "y": 980},
         "playerSpeed": 200,
         "worldWidth": 1920,
@@ -358,9 +358,65 @@
             {"type": 469, "posX": 1350, "posY": 910, "sizeX": 90, "sizeY": 140, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0.001, "oscillationRange": 95, "oscilationVertical": true},
             {"type": 469, "posX": 1550, "posY": 910, "sizeX": 90, "sizeY": 140, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0.002, "oscillationRange": 95, "oscilationVertical": true},
             {"type": 469, "posX": 1720, "posY": 910, "sizeX": 90, "sizeY": 140, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0.001, "oscillationRange": 95, "oscilationVertical": true}
+        ]
+    },
+    "seaLevel": {
+        "levelName": "Morská úroveň",
+        "backgroundImageKey": "gameBg1",
+        "start": {"x": 100, "y": 10},
+        "finish": {"x": 1820, "y": 20},
+        "playerSpeed": 200,
+        "worldWidth": 1920,
+        "worldHeight": 1080,
+        "stinkDuration": 3000,
+        "obstacles": [
+            {"type": 187, "posX": 260, "posY": 400, "sizeX": 525, "sizeY": 200, "velX": 0, "velY": 0, "imovable": true, "imageKey": "wooden_obstacle_large", "gravity": false},
+            {"type": 369, "posX": 360, "posY": 150, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0.001, "oscillationRange": 110, "oscilationVertical": true},
+            {"type": 187, "posX": 785, "posY": 400, "sizeX": 525, "sizeY": 200, "velX": 0, "velY": 0, "imovable": true, "imageKey": "wooden_obstacle_large", "gravity": false},
+            {"type": 369, "posX": 560, "posY": 150, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0.002, "oscillationRange": 110, "oscilationVertical": true},
+            {"type": 469, "posX": 750, "posY": 150, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0.0025, "oscillationRange": 95, "oscilationVertical": false},
+            {"type": 187, "posX": 1250, "posY": 0, "sizeX": 200, "sizeY": 425, "velX": 0, "velY": 0, "imovable": true, "imageKey": "wooden_obstacle_large", "gravity": false},
+            {"type": 369, "posX": 950, "posY": 150, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 950, "posY": 250, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 187, "posX": 1250, "posY": 630, "sizeX": 200, "sizeY": 425, "velX": 0, "velY": 0, "imovable": true, "imageKey": "wooden_obstacle_large", "gravity": false},
+            {"type": 369, "posX": 950, "posY": 800, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 1050, "posY": 800, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 850, "posY": 800, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 750, "posY": 800, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 650, "posY": 800, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 550, "posY": 800, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 450, "posY": 800, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 350, "posY": 800, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 250, "posY": 800, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 469, "posX": 800, "posY": 650, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0.0025, "oscillationRange": 95, "oscilationVertical": false},
+            {"type": 469, "posX": 600, "posY": 630, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0.001, "oscillationRange": 65, "oscilationVertical": true},
+            {"type": 469, "posX": 400, "posY": 610, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 469, "posX": 850, "posY": 1000, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0.0015, "oscillationRange": 95, "oscilationVertical": false},
+            {"type": 469, "posX": 600, "posY": 960, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0.001, "oscillationRange": 55, "oscilationVertical": true},
+            {"type": 469, "posX": 400, "posY": 1020, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 469, "posX": 1100, "posY": 960, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0.001, "oscillationRange": 55, "oscilationVertical": true},
 
+            {"type": 269, "posX": 1250, "posY": 950, "sizeX": 50, "sizeY": 50, "velX": 0, "velY": 0, "imovable": true, "imageKey": "star", "gravity": false, "oscillationSpeed": 0.004, "oscillationRange": 45, "oscilationVertical": true},
+            {"type": 269, "posX": 1100, "posY": 550, "sizeX": 50, "sizeY": 50, "velX": 0, "velY": 0, "imovable": true, "imageKey": "star", "gravity": false, "oscillationSpeed": 0.004, "oscillationRange": 45, "oscilationVertical": true},
+            {"type": 269, "posX": 1800, "posY": 250, "sizeX": 50, "sizeY": 50, "velX": 0, "velY": 0, "imovable": true, "imageKey": "star", "gravity": false, "oscillationSpeed": 0.004, "oscillationRange": 45, "oscilationVertical": true},
 
+            {"type": 469, "posX": 1650, "posY": 950, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0.0025, "oscillationRange": 195, "oscilationVertical": false},
+            {"type": 369, "posX": 1400, "posY": 750, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 1500, "posY": 750, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 1600, "posY": 750, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 369, "posX": 1700, "posY": 750, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 469, "posX": 1430, "posY": 550, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": false},
+            {"type": 469, "posX": 1630, "posY": 550, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": false},
+            {"type": 469, "posX": 1830, "posY": 550, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": false},
+            {"type": 469, "posX": 1710, "posY": 300, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": false},
+            {"type": 469, "posX": 1510, "posY": 300, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": false},
+            {"type": 369, "posX": 1830, "posY": 400, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
+            {"type": 469, "posX": 1650, "posY": 70, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": false}
 
+            
+
+            
+            
 
         ]
     }

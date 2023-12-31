@@ -52,7 +52,7 @@ onMounted(() => {
         debug: true // TODO toto zmen pri final release na false
       }
     },
-    scene: [ Init, Game, Menu, Manual, GameOver, LevelComplete ], // TODO treba zmeniť poradie na [Menu, Manual, Game....] !! iba kvôli vytvaraniu hry
+    scene: [Menu ,Manual , Init, Game, GameOver, LevelComplete ], // TODO treba zmeniť poradie na [Menu, Manual, Game....] !! iba kvôli vytvaraniu hry
     parent: 'game', 
     scale: {
       mode: Phaser.Scale.RESIZE, // Set the scale mode to RESIZE

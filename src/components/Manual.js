@@ -143,7 +143,7 @@ class ManualScene extends Phaser.Scene {
         .setInteractive({ useHandCursor: true })
 
         graphics.on('pointerdown', () => {
-            this.scene.start('GameScene');
+            this.scene.start('InitScene');
         });
     }
     
@@ -167,7 +167,7 @@ class ManualScene extends Phaser.Scene {
             var buttonBackground = this.add.rectangle(x, y, this.buttonWidth, this.buttonHeightHeight)
             .setOrigin(0.5, 0.5)
             .setInteractive({ useHandCursor: true })
-            .on('pointerdown', () => this.scene.start('GameScene'));
+            .on('pointerdown', () => this.scene.start('InitScene'));
     
         this.children.bringToTop(button);
     }
