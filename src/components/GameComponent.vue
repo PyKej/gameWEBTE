@@ -25,9 +25,6 @@
 
 </template>
 
-
-
-
 <script setup>
 import { onMounted } from 'vue';
 import Phaser from 'phaser';
@@ -38,13 +35,13 @@ import Manual from './Manual';
 import LevelComplete from './LevelComplete';
 import Init from './Init';
 
-let game; // Declare the game variable in the outer scope
+let game; 
 
 onMounted(() => {
   const config = {
     type: Phaser.CANVAS,
-    width: window.innerWidth, // Set the game width to the window width
-    height: window.innerHeight, // Set the game height to the window height
+    width: window.innerWidth, // Sets the game width to the window width
+    height: window.innerHeight, // Sets the game height to the window height
     physics: {
       default: 'arcade',
       arcade: {
@@ -52,15 +49,15 @@ onMounted(() => {
         debug: true // TODO toto zmen pri final release na false
       }
     },
-    scene: [Menu ,Manual , Init, Game, GameOver, LevelComplete ], // TODO treba zmeniť poradie na [Menu, Manual, Game....] !! iba kvôli vytvaraniu hry
+    scene: [Menu ,Manual , Init, Game, GameOver, LevelComplete ], 
     parent: 'game', 
     scale: {
-      mode: Phaser.Scale.RESIZE, // Set the scale mode to RESIZE
+      mode: Phaser.Scale.RESIZE, 
       autoCenter: Phaser.Scale.CENTER_BOTH
     }
   };
   
-  game = new Phaser.Game(config); // Assign the new Phaser game instance to the game variable
+  game = new Phaser.Game(config); 
 });
 
 window.addEventListener('resize', () => {
@@ -83,8 +80,6 @@ window.onafterprint = function() {
 
 </script>
 
-
-
 <style scoped>
 
 #game{
@@ -103,6 +98,7 @@ window.onafterprint = function() {
 }
 
 @media print {
+
     #printable {
         height: 29.7cm;
         width: 21cm;
@@ -135,6 +131,7 @@ window.onafterprint = function() {
       font-size: 22px;
       margin-bottom: 4em;
     }
+
     #imageKeys{
       position: absolute;
       top: 48%;
@@ -170,13 +167,13 @@ window.onafterprint = function() {
       transform: translate(-50%, -50%);
     }
 
-
     #imageSubmarine{
       position: absolute;
       top: 87%;
       left: 50%;
       transform: translate(-50%, -50%);
     }
+
     #credits{
       position: absolute;
       bottom: 1%;

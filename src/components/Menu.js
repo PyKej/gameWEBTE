@@ -1,25 +1,23 @@
 import Phaser from 'phaser'
 import menuImg from '../assets/bcg_3.png';
 
-var MainMenuScene = new Phaser.Class({
-
+class MainMenuScene extends Phaser.Scene{
     //MainMenuScene je subClassa Phaser.Scene
-    Extends: Phaser.Scene,
 
-    initialize: function MainMenuScene () {
-        Phaser.Scene.call(this, { key: 'main-menu' });
+    constructor() {
+        super({ key: 'main-menu' });
         this.showInfo = false;
-    },
+    }
 
-    init: function () {
+    init() {
         this.cursors = this.input.keyboard.createCursorKeys();
-    },
+    }
 
-    preload: function () {
+    preload() {
         this.load.image('menu_img', menuImg);
-    },
+    }
 
-    create: function () {
+    create() {
         // Constanty ktore su properties sceny
         this.rectWidth = 200;
         this.rectHeight = 100;
@@ -48,7 +46,7 @@ var MainMenuScene = new Phaser.Class({
 
         // Pridané credits
         this.addCredits(this.rectX, this.rectY + 290);
-    },
+    }
 
     //METODY PRE VYTVARANIE
     addMenuImage() {
@@ -57,18 +55,18 @@ var MainMenuScene = new Phaser.Class({
         var scaleY = this.cameras.main.height / this.menuImage.height;
         var scale = Math.max(scaleX, scaleY);
         this.menuImage.setScale(scale).setOrigin(0, 0);
-    },
+    }
 
     addHeaderText(x, y) {
         var headerText = 'Happy Submarine';
         var headerStyle = { fill: '#ffffff', fontSize: '4em', fontFamily: 'Arial' };
         this.add.text(x, y, headerText, headerStyle).setOrigin(0.5, 0.5);
-    },
+    }
 
     drawButton(graphics, x, y) {
         graphics.fillStyle(0xffffff); 
         graphics.fillRoundedRect(x - this.rectWidth / 2 , y - this.rectHeight / 2, this.rectWidth, this.rectHeight, this.borderRadius);
-    },
+    }
 
     addButtonStart(x, y, text) {
         var buttonStyle = { fill: '#1ac6ff', fontSize: '32px', fontWeight: '900', fontFamily: 'Arial' };
@@ -81,7 +79,7 @@ var MainMenuScene = new Phaser.Class({
             .on('pointerdown', () => this.scene.start('Manual'));
     
         this.children.bringToTop(button);
-    },
+    }
 
     addButtonAbout(x, y, text) {
         var buttonStyle = { fill: '#1ac6ff', fontSize: '32px', fontWeight: '900', fontFamily: 'Arial' };
@@ -94,15 +92,15 @@ var MainMenuScene = new Phaser.Class({
             .on('pointerdown', () => { this.showInfo = !this.showInfo; this.showAboutInfo(); });
     
         this.children.bringToTop(button);
-    },
+    }
 
     addCredits(x, y) {
         var creditsText = 'Created by Patrik Kester & Samuel Kubala';
         var creditsStyle = { fill: '#ffffff', fontSize: '16px', fontFamily: 'Arial' };
         this.add.text(x, y, creditsText, creditsStyle).setOrigin(0.5, 0.5);
-    },
+    }
 
-    update: function () {
+    update() {
         if (!this.showInfo && this.infoText) {
             this.infoText.setVisible(false);
             this.graphics.setVisible(false);
@@ -110,13 +108,13 @@ var MainMenuScene = new Phaser.Class({
             this.infoText.setVisible(true);
             this.graphics.setVisible(true);
         }
-    },
+    }
 
     //METODA PRE UPDATE
     showAboutInfo() {
         if (!this.infoText) {
-            var infoText = 'Včera som sa opil a skuril :)'; 
-            var infoStyle = { fill: '#000000', fontSize: '16px', fontWeight: 'bold', wordWrap: { width: 200 } }; 
+            var infoText = 'This game is about adventurous jurney of Bubbles the Submarine !'; 
+            var infoStyle = { fill: '#1ac6ff', fontSize: '16px', fontWeight: 'bold', wordWrap: { width: 200 } }; 
 
             this.graphics = this.add.graphics();
             this.graphics.fillStyle(0xffffff); 
@@ -126,9 +124,8 @@ var MainMenuScene = new Phaser.Class({
         }
         this.infoText.setVisible(this.showInfo);
         this.graphics.setVisible(this.showInfo);
-    },
-});
-
-   
+    }
+}
+ 
 export default MainMenuScene;
 

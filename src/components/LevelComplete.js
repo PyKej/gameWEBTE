@@ -3,6 +3,7 @@ import backgroundImg from '../assets/bcg_3.png';
 import star from '../assets/star.png';
 
 class LevelCompleteScene extends Phaser.Scene {
+
     constructor() {
         super({ key: 'LevelCompleteScene' });
     }
@@ -38,7 +39,6 @@ class LevelCompleteScene extends Phaser.Scene {
 
         this.drawButton(graphics, this.rectX, this.rectY + 160);
         this.addButtonNext(this.rectX, this.rectY + 160, 'Next');
-
     }
 
     addBackgroundImage() {

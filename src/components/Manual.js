@@ -8,6 +8,7 @@ import jellyfish from '../assets/jellyfish.png';
 import finish from '../assets/finish.png';
 
 class ManualScene extends Phaser.Scene {
+
     constructor() {
         super({ key: 'Manual' });
     }
@@ -66,7 +67,6 @@ class ManualScene extends Phaser.Scene {
         this.addButtonPlay(this.buttonWidth + this.scale.width *0.05 , this.buttonHeight + this.scale.height * 0.767, 'Lets Play!'); 
     }
     
-    
     addBackgroundImage() {
         this.backgroundImage = this.add.image(0, 0, 'background');
         var scaleX = this.cameras.main.width / this.backgroundImage.width;
@@ -76,20 +76,16 @@ class ManualScene extends Phaser.Scene {
     }
 
     addImages() {
-        
-        var imgWidth = 80;
-    
+            
         this.addImage(this.scale.width/2 - 40 , this.scale.height * 0.3367, 'arrKeys'); 
         this.addStarImage(this.scale.width/2 - 70, this.scale.height * 0.51, 'starImg');
         this.addImage(this.scale.width/2 + 15 , this.scale.height * 0.51, 'finish'); 
         this.addImage(0, 0, 'submarineImg'); 
-        this.addImage(this.scale.width - imgWidth, 0 , 'submarineImg'); 
+        this.addImage(this.scale.width - 80, 0 , 'submarineImg'); 
         this.addImage(this.scale.width/2 - 80, this.scale.height * 0.6867, 'seaMine');
         this.addImage(this.scale.width/2 + 15, this.scale.height * 0.6867, 'jelly'); 
     }
     
-
-
     addImage(x, y, imageName) {
         let image = this.add.image(x, y, imageName);
     
@@ -114,6 +110,7 @@ class ManualScene extends Phaser.Scene {
         var headerStyle = { fill: '#ffffff', fontSize: '4em', fontFamily: 'Arial' };
         this.add.text(x, y, headerText, headerStyle).setOrigin(0.5, 0.5);
     }
+    
     //Header 2 
     addHeaderText2(x, y) {
         var headerText = 'HAPPY SUBMARINE';

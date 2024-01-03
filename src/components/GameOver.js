@@ -16,17 +16,14 @@ class GameOverScene extends Phaser.Scene {
     }
 
     create() {
-        this.scene.start('GameScene'); //TODO Delete this line GODMODE
-        // Create objects here
         // Constanty ktore su properties sceny
-        this.rectWidth = this.scale.width * 0.35; // 25% of the game width
-        this.rectHeight = this.scale.height * 0.167; // 16.7% of the game height
+        this.rectWidth = this.scale.width * 0.35; 
+        this.rectHeight = this.scale.height * 0.167; 
         this.borderRadius = 20; 
 
         // Koordinaty na cetrovanie
-        this.rectX = this.scale.width / 2; // Center of the game width
-        this.rectY = this.scale.height / 2; // Center of the game height
-
+        this.rectX = this.scale.width / 2; 
+        this.rectY = this.scale.height / 2; 
 
         // Grafika pre útvary
         var graphics = this.add.graphics();
@@ -37,7 +34,6 @@ class GameOverScene extends Phaser.Scene {
         //Obrázok kostry
         this.addSkullImages();
 
-
         //Pridaný nadpis
         this.addHeaderText1(this.rectX, this.rectY - 160);
         this.addHeaderText2(this.rectX, this.rectY - 110);
@@ -45,12 +41,9 @@ class GameOverScene extends Phaser.Scene {
         //Pridané Restart button
         this.drawButton(graphics, this.rectX, this.rectY + 160);
         this.addButtonRestart(this.rectX, this.rectY + 160, 'Restart');
-
-
     }
     
     addSkullImages() {
-        // Image dimensions
         var imgWidth = 90;
         var imgHeight = 120;
     
@@ -65,7 +58,6 @@ class GameOverScene extends Phaser.Scene {
         // Do textu
         this.addSkullImage(this.scale.width / 2 - imgWidth / 2, this.scale.height / 2 - imgHeight / 2);
     }
-
 
     addSkullImage(x, y) {
         this.skullImg = this.add.image(x, y, 'skull');
@@ -83,6 +75,7 @@ class GameOverScene extends Phaser.Scene {
         var headerStyle = { fill: '#ffffff', fontSize: '60px', fontFamily: 'Arial' };
         this.add.text(x, y, headerText, headerStyle).setOrigin(0.5, 0.5);
     }
+
     //Header OVER 
     addHeaderText2(x, y) {
         var headerText = 'OVER';
@@ -121,7 +114,6 @@ class GameOverScene extends Phaser.Scene {
     
         this.children.bringToTop(button);
     }
-
 
     update() {
         // Update game state here
