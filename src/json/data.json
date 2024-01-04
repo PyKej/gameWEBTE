@@ -412,12 +412,6 @@
             {"type": 469, "posX": 1510, "posY": 300, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": false},
             {"type": 369, "posX": 1830, "posY": 400, "sizeX": 70, "sizeY": 70, "velX": 0, "velY": 0, "imovable": true, "imageKey": "sea_mine", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": true},
             {"type": 469, "posX": 1650, "posY": 70, "sizeX": 90, "sizeY": 120, "velX": 0, "velY": 0, "imovable": true, "imageKey": "jellyfish", "gravity": false, "oscillationSpeed": 0, "oscillationRange": 0, "oscilationVertical": false}
-
-            
-
-            
-            
-
         ]
     }
 }   

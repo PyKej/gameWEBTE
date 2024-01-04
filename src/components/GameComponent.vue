@@ -46,7 +46,7 @@ onMounted(() => {
       default: 'arcade',
       arcade: {
         gravity: { y: 10 },
-        debug: true // TODO toto zmen pri final release na false
+        debug: false
       }
     },
     scene: [Menu ,Manual , Init, Game, GameOver, LevelComplete ], 

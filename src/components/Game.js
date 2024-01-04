@@ -80,8 +80,8 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
-        this.randomizeLevelOrder(); // Randomize level order at the start
-        this.loadLevelData(); // Load the first level's data
+        this.randomizeLevelOrderSetup(); // Randomize level order at the start
+        this.loadLevelDataSetup(); // Load the first level's data
         this.boundsSetup(); // bounds
         this.addBackgroundImageSetup(); // background
         this.allSoundSetup(); // sound
@@ -90,7 +90,7 @@ class GameScene extends Phaser.Scene {
         this.cameraSetup();  // Setup the camera
         this.starScoreSetup(); // stars
         this.finishSetup(); // finish
-        this.processLevelData();
+        this.processLevelDataSetup();
         this.bombExplosionSetup(); // bomb explosion
         this.jellyfishSetup(); // jellyfish
         this.createBorderSetup(); // border
@@ -103,7 +103,7 @@ class GameScene extends Phaser.Scene {
         this.movePlayerUpdate(); // Move the player
     }
 
-    processLevelData() {
+    processLevelDataSetup() {
         // Create groups for items
         this.groupWoodenObstacleSmall = this.physics.add.group({
             bounceX: 1,
@@ -195,14 +195,14 @@ class GameScene extends Phaser.Scene {
     }
 
     // ********** ADITIONAL FUNCTIONS **********
-    randomizeLevelOrder() {
+    randomizeLevelOrderSetup() {
         // Define your level keys
         const levels = ['rageLevel', 'woodenLevel', 'scaryDungeonLevel'];
         // Shuffle the array
         this.levelOrder = Phaser.Utils.Array.Shuffle(levels);
     }
 
-    loadLevelData() {
+    loadLevelDataSetup() {
         // Get the level order and current level index from the registry
         const levelOrder = this.game.registry.get('levelOrder');
         const currentLevelIndex = this.game.registry.get('currentLevelIndex');
@@ -258,7 +258,7 @@ class GameScene extends Phaser.Scene {
             this.currentLevelIndex = 0; // Loop back to the first level if all are complete
         }
         this.game.registry.set('currentLevelIndex', this.currentLevelIndex); // Update the current level index in the game's registry
-        this.loadLevelData();
+        this.loadLevelDataSetup();
         this.scene.restart();
     }
 
@@ -372,12 +372,12 @@ class GameScene extends Phaser.Scene {
         // music
 
          // Check if the background music is already playing
-    if (!this.bgMusic || !this.bgMusic.isPlaying) {
-        this.bgMusic = this.sound.add('bgMusic');
-        this.bgMusic.play();
-        this.bgMusic.loop = true;
-        this.bgMusic.volume = 0.1;
-    }
+        if (!this.bgMusic || !this.bgMusic.isPlaying) {
+            this.bgMusic = this.sound.add('bgMusic');
+            this.bgMusic.play();
+            this.bgMusic.loop = true;
+            this.bgMusic.volume = 0.1;
+        }
 
         this.starSoundEffect = this.sound.add('starSoundEffect');
 
@@ -428,14 +428,7 @@ class GameScene extends Phaser.Scene {
     pauseGameSetup(){
         let buttonBackground = this.add.image(30,70,'stop');
         buttonBackground.setScale(0.5);
-       // buttonBackground.fillStyle(0xffffff);  // Set the color to white
-       // buttonBackground.fillRect(15, 50, 100, 50);  // Set the position and size of the button
         buttonBackground.setScrollFactor(0);
-
-        /* let buttonText = this.add.text(65, 75, 'Pause', { color: '#1ac6ff', align: 'center', fontSize: '24px' });
-        buttonText.setOrigin(0.5, 0.5);  // Set the origin to the center of the text
-        buttonText.setScrollFactor(0); */
-
         buttonBackground.setInteractive(new Phaser.Geom.Rectangle(0, 0, 100, 80), Phaser.Geom.Rectangle.Contains);
         buttonBackground.on('pointerup', () => {
                 if (!this.gameIsPaused) {
@@ -447,7 +440,6 @@ class GameScene extends Phaser.Scene {
                     this.game.loop.wake();
                 }
             });
-        
                 
         this.input.keyboard.on('keydown-ESC', () => {
             if (this.gameIsPaused) {
@@ -455,10 +447,9 @@ class GameScene extends Phaser.Scene {
                     this.gameIsPaused = false;
                 }
             });
-            
-
     }
 
+    
 }
 
 export default GameScene;
