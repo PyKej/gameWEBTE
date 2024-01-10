@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Ignore specific zip file
+final_pitka_kubala.zip
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -3,11 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/ico" href="src/assets/submarine.ico" />
+    <link rel="manifest" href="src/json/manifest.json">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Happy submarine</title>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.js"></script>
+
+    
+    <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('src/service-worker.js')
+          .then(reg => console.log('Service Worker: Registered'))
+          .catch(err => console.log(`Service Worker: Error: ${err}`));
+      });
+    }
+</script>
   </body>
 </html>

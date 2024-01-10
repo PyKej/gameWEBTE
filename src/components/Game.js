@@ -46,6 +46,11 @@ class GameScene extends Phaser.Scene {
         this.levelOrder = []; // Array to store the randomized level order
         this.currentLevelIndex = 0; // Index to track the current level
         this.levelData = null; // Variable to store the current level data
+
+        // Gyroscope Data
+        this.beta = null; // Front-back tilt
+        this.gamma = null; // Left-right tilt
+
     }
 
     preload() {
@@ -95,6 +100,12 @@ class GameScene extends Phaser.Scene {
         this.jellyfishSetup(); // jellyfish
         this.createBorderSetup(); // border
         this.pauseGameSetup();// pause the game
+
+        // Check for Gyroscope Availability and Setup Listener
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener("deviceorientation", this.handleOrientation.bind(this), true);
+            console.log("DeviceOrientation is supported");
+        }
     }
     
     update() {
@@ -194,6 +205,17 @@ class GameScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.groupStars, this.collectStar, null, this);
     }
 
+
+    handleOrientation(event) {
+    // Update beta and gamma only if they provide meaningful data
+        if (event.beta !== null && event.gamma !== null) {
+            this.beta = event.beta;
+            this.gamma = event.gamma;
+
+            console.log("beta: " + this.beta);
+            console.log("gamma: " + this.gamma);
+        }
+    }
     // ********** ADITIONAL FUNCTIONS **********
     randomizeLevelOrderSetup() {
         // Define your level keys
@@ -336,36 +358,41 @@ class GameScene extends Phaser.Scene {
     }
 
     movePlayerUpdate() {
-        // for up down left right keys
-        const { left, right, up, down } = this.cursor;
-
-        if(this.jellyfishStink === false){ // if jellyfish stink is not true
-
-             // Reset player velocity
-            this.player.setVelocity(0);
-            
-            // Horizontal movement
-            if (left.isDown) {
-                this.player.setVelocityX(-this.playerSpeed);
-            } else if (right.isDown) {
-                this.player.setVelocityX(this.playerSpeed);
-            }
-        
-            // Vertical movement
-            if (up.isDown) {
-                this.player.setVelocityY(-this.playerSpeed);
-            } else if (down.isDown) {
-                this.player.setVelocityY(this.playerSpeed);
-            }
-        
-            // Automatic downward movement when no keys are pressed
-            if (!left.isDown && !right.isDown && !up.isDown && !down.isDown) {
-                this.player.setVelocityY(50); // Adjust this value as needed
-            }
-        }
-        else{ // if jellyfish stink is true
+        // Additional logic if jellyfish stink is true
+        if (this.jellyfishStink) {
             this.player.setVelocityY(90);
         }
+        else{
+            // Check if gyroscope data is available and non-null
+            if (this.beta !== null && this.gamma !== null) {
+                // Gyroscope-based movement
+                this.player.setVelocityX(this.gamma * 6); // Adjust sensitivity as needed
+                this.player.setVelocityY(this.beta * 6); // Adjust sensitivity as needed
+            } else {
+                // Keyboard-based movement
+                this.player.setVelocity(0); // Reset player velocity
+
+                // Horizontal movement
+                if (this.cursor.left.isDown) {
+                    this.player.setVelocityX(-this.playerSpeed);
+                } else if (this.cursor.right.isDown) {
+                    this.player.setVelocityX(this.playerSpeed);
+                }
+
+                // Vertical movement
+                if (this.cursor.up.isDown) {
+                    this.player.setVelocityY(-this.playerSpeed);
+                } else if (this.cursor.down.isDown) {
+                    this.player.setVelocityY(this.playerSpeed);
+                }
+
+                // Automatic downward movement when no keys are pressed
+                if (!this.cursor.left.isDown && !this.cursor.right.isDown && !this.cursor.up.isDown && !this.cursor.down.isDown) {
+                    this.player.setVelocityY(50); // Adjust this value as needed
+                }
+            }
+        }   
+
     }
 
     allSoundSetup() {
@@ -449,7 +476,7 @@ class GameScene extends Phaser.Scene {
             });
     }
 
-    
+
 }
 
 export default GameScene;
